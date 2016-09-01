@@ -1,3 +1,5 @@
+package model;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -216,8 +218,8 @@ public class Video {
 		return true;
 	}
 
-	
-	boolean move()
+
+	public boolean move()
 	{
 		if(copy)
 		{
