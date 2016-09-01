@@ -32,7 +32,8 @@ public class main {
 
 //	static String  importL = "/Users/joshangelsberg/Documents/movie testttt/download/";
 //	static String  importL = "A:\\My Libraries\\BitTorrent\\Complete\\Files\\";
-	static String  importL = "/Users/joshangelsberg/Documents/programming/moviemover/playground/import/";
+//	static String  importL = "/Users/joshangelsberg/Documents/programming/moviemover/playground/import/";
+	static String  importL = "playground/import/";
 
 	static String movielogloc = importL+".moviemover";
 	static String infologloc = importL+".mmlog";
