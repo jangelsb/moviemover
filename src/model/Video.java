@@ -11,13 +11,16 @@ import org.apache.commons.io.FileUtils;
 public class Video {
 
 	
-	/*private String movieD = "/Users/joshangelsberg/Documents/movie testttt/destfolder/Movies/";
-	private String tvD = "/Users/joshangelsberg/Documents/movie testttt/destfolder/TV Shows/";
-	private String ossep = "/";*/
+//	private String movieD = "/Users/joshangelsberg/Documents/movie testttt/destfolder/Movies/";
+//	private String tvD = "/Users/joshangelsberg/Documents/movie testttt/destfolder/TV Shows/";
+//	private String ossep = "/";
 	
-	private String movieD = "A:\\My Libraries\\Videos\\Movies\\";
-	private String tvD = "A:\\My Libraries\\Videos\\TV Shows\\";	
-	private String ossep = "\\";
+//	private String movieD = "A:\\My Libraries\\Videos\\Movies\\";
+//	private String tvD = "A:\\My Libraries\\Videos\\TV Shows\\";
+//	private String ossep = "\\";
+	private String movieD = "/Users/joshangelsberg/Documents/programming/moviemover/playground/movies/";
+	private String tvD = "/Users/joshangelsberg/Documents/programming/moviemover/playground/tvshows/";
+	private String ossep = "/";
 	
 	
 	
