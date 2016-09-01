@@ -30,8 +30,9 @@ public class main {
 	static ArrayList<String> exts = new ArrayList<>();
 
 
-	//static String  importL = "/Users/joshangelsberg/Documents/movie testttt/download/";
-	static String  importL = "A:\\My Libraries\\BitTorrent\\Complete\\Files\\";
+//	static String  importL = "/Users/joshangelsberg/Documents/movie testttt/download/";
+//	static String  importL = "A:\\My Libraries\\BitTorrent\\Complete\\Files\\";
+	static String  importL = "/Users/joshangelsberg/Documents/programming/moviemover/playground/import/";
 
 	static String movielogloc = importL+".moviemover";
 	static String infologloc = importL+".mmlog";
@@ -67,8 +68,7 @@ public class main {
 
         Date d = new Date();
 
-		System.out.println(d.toString()+"\nSearching for new videos / setting up...");
-		writeToInfoLog(d.toString()+"\nSearching for new videos / setting up...");
+		myLog(d.toString()+"\nSearching for new videos / setting up...");
 
 
 
@@ -77,32 +77,28 @@ public class main {
 
 		if(nonewmovies)
 		{
-			System.out.println("No new videos found.");
-			writeToInfoLog("No new videos found.\n");
-
+			myLog("No new videos found.");
 		}
 		else
 		{
-			System.out.println("Done.");
-			writeToInfoLog("Done.");
+			myLog("Done.\n");
 
 
-			printVideos();
+			//printVideos();
 
 
 			writeFoundMovie();
 
-			System.out.println("Moving videos to correct directories...");
-			writeToInfoLog("Moving videos to correct directories...");
+			myLog("Moving videos to correct directories...");
 
 			moveVideos();
 
-			printVideosInfo();
+			//printVideosInfo();
 			writeMovieInfo();
-			System.out.println("Done.");
-			writeToInfoLog("Done.\n");
+			myLog("Done.");
 
 		}
+		myLog("------------------------------");
 
 		//printVideos();
 
@@ -116,12 +112,14 @@ public class main {
 
 	private static void writeFoundMovie() {
 
-			writeToInfoLog("Found movies:");
+			myLog("Found movies:");
 
 			for(Video v : videos)
 			{
-				writeToInfoLog(v.getVideo().getName());
+				myLog(v.getVideo().getName());
 			}
+
+			myLog(""); // adds a new line
 
 
 	}
@@ -131,7 +129,7 @@ public class main {
 
 		for(Video v : videos)
 		{
-			writeToInfoLog(v.getInfo());
+			myLog(v.getInfo());
 		}
 
 
@@ -405,6 +403,13 @@ public class main {
 
 		return nmovie;
 	}
+
+	private static void myLog(String message)
+	{
+		System.out.println(message);
+		writeToInfoLog(message);
+	}
+
 
 
 
