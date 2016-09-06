@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 
-
-public class VideoNew {
+// I want this to actually be abstract
+public class VideoNew { 
 	
 	private String title;
 	private String quality;
@@ -20,7 +20,7 @@ public class VideoNew {
 	private File movieFile;
 	private File DestLoc = null;
 
-	private String fileName; //full name of file with ext  not the location
+	// private String fileName; //full name of file with ext  not the location
 	private String parentName;  
 
 	private boolean type; // true = movie false = TV show
@@ -30,18 +30,13 @@ public class VideoNew {
 	private String quality; // true = 720p false = 1080p
 	private String filetype; //.mkv, .mp4, .avi, .rar
 	
-	private boolean copy=true; // true = copy false = just move	
+	private boolean copy;// true = copy false = just move	
 	
 	public Video(File video) {
-
 		this(video, true)
 	}
 
-
-
-
 	public Video(File video, boolean copy) {
-
 		this.copy=copy;
 		init(video);
 	}
@@ -50,63 +45,69 @@ public class VideoNew {
 
 
 	private void init(File video) {
-
 		this.video = video;
 		this.fileName = video.getName();
 		this.parentName = video.getParentFile().getName();
 		this.title = getTitle();
 		this.quality = getVideoQuality();
 		this.ext = getExtension();
-		setupDest();
 	}
 
 
-
-//Determines if its a movie or a tv show
-	private boolean videoType() {
-		String fname = this.fileName.toLowerCase();
-		String pname = this.parentName.toLowerCase();
+// TODO maybe make static? 
+// //Determines if its a movie or a tv show
+// 	private boolean videoType() {
+// 		String fname = this.fileName.toLowerCase();
+// 		String pname = this.parentName.toLowerCase();
  
-		//System.out.println(fname);
+// 		//System.out.println(fname);
 
-		Pattern pattern = Pattern.compile("s+\\d\\d+e+\\d\\d"); // vs   s+\\d\\d+e+\\d
-		Matcher matcherF = pattern.matcher(fname);
+// 		Pattern pattern = Pattern.compile("s+\\d\\d+e+\\d\\d"); // vs   s+\\d\\d+e+\\d
+// 		Matcher matcherF = pattern.matcher(fname);
 		
-		int start=0;  //start of the data
-		String data = ""; // eg S02E05
+// 		int start=0;  //start of the data
+// 		String data = ""; // eg S02E05
 		
-		boolean found = false;
+// 		boolean found = false;
 		
-		  while (matcherF.find()) {
-		        start= matcherF.start();
-		        data=matcherF.group();
-		        found = true;
-		    }
+// 		  while (matcherF.find()) {
+// 		        start= matcherF.start();
+// 		        data=matcherF.group();
+// 		        found = true;
+// 		    }
 		  
-		if(found)
-		{
-			//System.out.print(data + "  loc : " + start + " |||  ");
-			int sni = Integer.parseInt(data.substring(1, 3));
-			this.tvname = stripNameTV(start);
-			this.season = "Season " + sni;
-			return false;
-		}
+// 		if(found)
+// 		{
+// 			//System.out.print(data + "  loc : " + start + " |||  ");
+// 			int sni = Integer.parseInt(data.substring(1, 3));
+// 			this.tvname = stripNameTV(start);
+// 			this.season = "Season " + sni;
+// 			return false;
+// 		}
 		
-		else
-		{
-			stripNameMovie();
-			return true;
-		}
+// 		else
+// 		{
+// 			stripNameMovie();
+// 			return true;
+// 		}
+// 	}
+
+	private String getTitle() {
+		
+		// TODO
+		// Possibly do a combination of stripNameTV and stripNameMovie
+		// if it is different for Movies and TVShows, then make this abstract
+		// if abstract, will this call the inherited classes?
 	}
-
-
 
 
 	private String getVideoQuality() {		
+
+		String fileOrFolder = this.fileName + this.parentName;
 		
-		if(this.fileName.contains("720p") || this.parentName.contains("720p"))
+		if(fileOrFolder.contains("720p"))
 			return "720p";
-		else if(this.fileName.contains("1080p") || this.parentName.contains("1080p"))
+		else if(fileOrFolder.contains("1080p"))
 			return "1080p";
 		else 
 			return "Non HD";
@@ -131,10 +132,12 @@ public class VideoNew {
 			sn=sn.substring(0, loc1080);
 		}
 		
-		while(sn.endsWith(" "))
-		{
-			sn=sn.substring(0,sn.length()-1);
-		}
+		// while(sn.endsWith(" "))
+		// {
+		// 	sn=sn.substring(0,sn.length()-1);
+		// }
+
+		sn = sn.strip();
 
 		//add functionality to capitalize first letter of each word TODO
 	
@@ -170,42 +173,42 @@ public class VideoNew {
 			s=s.substring(0, loc1080);
 		}
 		
-		while(s.endsWith(" "))
-		{
-			s=s.substring(0,s.length()-1);
-		}
+		// while(s.endsWith(" "))
+		// {
+		// 	s=s.substring(0,s.length()-1);
+		// }
+
+		sn = sn.strip();
 
 		//add functionality to capitalize first letter of each word TODO
 	
 		return s;
 	}
 	
-	private String getExtension()
-	{
+	private String getExtension() {
 		return this.fileName.substring(this.fileName.lastIndexOf("."));
 	}
 	
-	private boolean setupDest() // TODO windows vs mac
-	{	
-		if(type)
-		{
-			//DestLoc = new File("A:\\My Libraries\\Videos\\Movies\\"+this.quality+"\\"); //TODO location for movies
-			DestLoc = new File(this.movieD+this.quality+this.ossep);
-		}
-		else
-		{//+this.quality+"/TV Shows/"+this.tvname+"/"+this.season+"/");
+	// private boolean setupDest() // TODO windows vs mac
+	// {	
+	// 	if(type)
+	// 	{
+	// 		//DestLoc = new File("A:\\My Libraries\\Videos\\Movies\\"+this.quality+"\\"); //TODO location for movies
+	// 		DestLoc = new File(this.movieD+this.quality+this.ossep);
+	// 	}
+	// 	else
+	// 	{//+this.quality+"/TV Shows/"+this.tvname+"/"+this.season+"/");
 			
-			//DestLoc = new File("A:\\My Libraries\\Videos\\TV Shows\\"+this.quality+"\\TV Shows\\"+this.tvname+"\\"+this.season+"\\"); //TODO location for tv
-			DestLoc = new File(this.tvD+this.quality+this.ossep+"TV Shows"+this.ossep+this.tvname+this.ossep+this.season+this.ossep);
-		}	//A:\My Libraries\Videos\TV Shows\   720p\     TV Shows\    Agents of Shield\    Season 1\
+	// 		//DestLoc = new File("A:\\My Libraries\\Videos\\TV Shows\\"+this.quality+"\\TV Shows\\"+this.tvname+"\\"+this.season+"\\"); //TODO location for tv
+	// 		DestLoc = new File(this.tvD+this.quality+this.ossep+"TV Shows"+this.ossep+this.tvname+this.ossep+this.season+this.ossep);
+	// 	}	//A:\My Libraries\Videos\TV Shows\   720p\     TV Shows\    Agents of Shield\    Season 1\
 		
-		DestLoc.mkdirs(); // instead of mkdir b/c theres ton of new folders
-		return true;
-	}
+	// 	DestLoc.mkdirs(); // instead of mkdir b/c theres ton of new folders
+	// 	return true;
+	// }
 
 
-	public boolean move()
-	{
+	public boolean move() {
 
 		try {
 				if(copy) 
@@ -221,21 +224,15 @@ public class VideoNew {
 			}
 	}
 	
-
-
-	public File getVideo() {
-		// TODO Auto-generated method stub
-		return this.movieFile;
-	}
 	
-	public String getInfo() {
-		// TODO Auto-generated method stub
-		String info = "";
-		if(copy)
-			info+=this.fileName+" was copied to " + this.DestLoc.getAbsolutePath();
-		else
-			info+=this.fileName+" was moved to " + this.DestLoc.getAbsolutePath();
+	// public String getInfo() {
+
+	// 	String info = "";
+	// 	if(copy)
+	// 		info+=this.fileName+" was copied to " + this.DestLoc.getAbsolutePath();
+	// 	else
+	// 		info+=this.fileName+" was moved to " + this.DestLoc.getAbsolutePath();
 		
-		return info;
-	}
+	// 	return info;
+	// }
 }
