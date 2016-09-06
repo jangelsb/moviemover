@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 
-// I want this to actually be abstract
+// I want this to actually be and abstract class
 public class VideoNew { 
 	
 	private String title;
@@ -93,7 +93,7 @@ public class VideoNew {
 // 	}
 
 	private String getTitle() {
-		
+
 		// TODO
 		// Possibly do a combination of stripNameTV and stripNameMovie
 		// if it is different for Movies and TVShows, then make this abstract
