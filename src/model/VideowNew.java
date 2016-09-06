@@ -8,31 +8,19 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 
 
-public class Video {
-
+public class VideoNew {
 	
-//	private String movieD = "/Users/joshangelsberg/Documents/movie testttt/destfolder/Movies/";
-//	private String tvD = "/Users/joshangelsberg/Documents/movie testttt/destfolder/TV Shows/";
-//	private String ossep = "/";
-	
-//	private String movieD = "A:\\My Libraries\\Videos\\Movies\\";
-//	private String tvD = "A:\\My Libraries\\Videos\\TV Shows\\";
-//	private String ossep = "\\";
-//	private String movieD = "/Users/joshangelsberg/Documents/programming/moviemover/playground/movies/";
-//	private String tvD = "/Users/joshangelsberg/Documents/programming/moviemover/playground/tvshows/";
-//	private String ossep = "/";
-
-	private String movieD = "playground/movies/";
-	private String tvD = "playground/tvshows/";
-	private String ossep = "/";
-	
-	
+	private String title;
+	private String quality;
+	private String ext;
+	private String fileName;
+	private File video;
 
 	
 	private File movieFile;
 	private File DestLoc = null;
 
-	private String filename; //full name of file with ext  not the location
+	private String fileName; //full name of file with ext  not the location
 	private String parentName;  
 
 	private boolean type; // true = movie false = TV show
@@ -44,48 +32,39 @@ public class Video {
 	
 	private boolean copy=true; // true = copy false = just move	
 	
-	public Video(File f) {
-		
-		
-		this.copy=true;;
-		fillVideo(f);
+	public Video(File video) {
+
+		this(video, true)
 	}
 
 
 
 
-	public Video(File f, boolean b) {
-		
-		this.copy=b;
-		fillVideo(f);
+	public Video(File video, boolean copy) {
+
+		this.copy=copy;
+		init(video);
 	}
 
 
 
 
-	private void fillVideo(File f) {
+	private void init(File video) {
 
-		this.movieFile = f;
-		this.filename = f.getName();
-		this.parentName = f.getParentFile().getName();
-		
+		this.video = video;
+		this.fileName = video.getName();
+		this.parentName = video.getParentFile().getName();
+		this.title = getTitle();
 		this.quality = getVideoQuality();
-		
-		this.type = videoType(); // if a show season is filled and the tvname is filled		
-
-		this.filetype = getFileType();
-		
-		
+		this.ext = getExtension();
 		setupDest();
-		
-		
 	}
 
 
 
 //Determines if its a movie or a tv show
 	private boolean videoType() {
-		String fname = this.filename.toLowerCase();
+		String fname = this.fileName.toLowerCase();
 		String pname = this.parentName.toLowerCase();
  
 		//System.out.println(fname);
@@ -125,9 +104,9 @@ public class Video {
 
 	private String getVideoQuality() {		
 		
-		if(this.filename.contains("720p") || this.parentName.contains("720p"))
+		if(this.fileName.contains("720p") || this.parentName.contains("720p"))
 			return "720p";
-		else if(this.filename.contains("1080p") || this.parentName.contains("1080p"))
+		else if(this.fileName.contains("1080p") || this.parentName.contains("1080p"))
 			return "1080p";
 		else 
 			return "Non HD";
@@ -136,7 +115,7 @@ public class Video {
 	private String stripNameTV(int start) {
 		
 		
-		String sn = this.filename.substring(0, start);
+		String sn = this.fileName.substring(0, start);
 		
 		sn=sn.replace('.', ' ');
 		
@@ -165,7 +144,7 @@ public class Video {
 	private String stripNameMovie() {
 		
 		
-		String s = this.filename;
+		String s = this.fileName;
 		
 		s=s.replace('.', ' ');
 		s=s.replace('.', ' ');
@@ -201,9 +180,9 @@ public class Video {
 		return s;
 	}
 	
-	private String getFileType()
+	private String getExtension()
 	{
-		return this.filename.substring(this.filename.lastIndexOf("."));
+		return this.fileName.substring(this.fileName.lastIndexOf("."));
 	}
 	
 	private boolean setupDest() // TODO windows vs mac
@@ -227,38 +206,21 @@ public class Video {
 
 	public boolean move()
 	{
-		if(copy)
-		{
-			try {
-				FileUtils.copyFileToDirectory(this.movieFile, this.DestLoc);
+
+		try {
+				if(copy) 
+					FileUtils.copyFileToDirectory(this.movieFile, this.DestLoc);
+				else
+					FileUtils.moveFileToDirectory(this.movieFile,this.DestLoc, true);
+
+				return true;
+
 			} catch (Exception e) {
 				e.printStackTrace();
+				return false;
 			}
-		}
-		
-		else
-		{
-			try{
-				
-				FileUtils.moveFileToDirectory(this.movieFile,this.DestLoc, true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-		}
-		
-		return true;
 	}
 	
-	/*{
-		
-			if(rared)
-			{
-				extract;
-			}
-	}*/
-
-
 
 
 	public File getVideo() {
@@ -270,9 +232,9 @@ public class Video {
 		// TODO Auto-generated method stub
 		String info = "";
 		if(copy)
-			info+=this.filename+" was copied to " + this.DestLoc.getAbsolutePath();
+			info+=this.fileName+" was copied to " + this.DestLoc.getAbsolutePath();
 		else
-			info+=this.filename+" was moved to " + this.DestLoc.getAbsolutePath();
+			info+=this.fileName+" was moved to " + this.DestLoc.getAbsolutePath();
 		
 		return info;
 	}
