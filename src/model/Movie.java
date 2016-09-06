@@ -13,4 +13,20 @@ public class Movie extends VideoNew {
 	private String year;
 
 
+	public Movie(File movie) {
+		this(movie, true);
+	}
+
+	public Movie(File movie, boolean copy) {
+		super(movie, copy);
+	}
+
+	private String getTitle() {
+
+		// TODO
+		// Convert stripNameMovie
+		// Set year in here
+	}
+
+
 }
