@@ -10,10 +10,10 @@ import org.apache.commons.io.FileUtils;
 
 public class TVShow extends VideoNew {
 
+	private String tvShowName;
 	private String season;
 	private String episode;
-
-
+	
 	public TVShow(File tvShow) {
 		this(tvShow, true);
 	}
@@ -22,6 +22,12 @@ public class TVShow extends VideoNew {
 		super(tvShow, copy);
 	}
 
+	public TVShow(File tvShow, String tvShowName, String season, String episode) {
+		super(tvShow, true);
+		this.tvShowName = tvShowName;
+		this.season = season;
+		this.episode = episode;
+	}
 
 	private String getTitle() {
 
