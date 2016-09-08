@@ -26,6 +26,7 @@ public class Movie extends VideoNew {
 		// TODO
 		// Convert stripNameMovie
 		// Set year in here
+		return "";
 	}
 
 

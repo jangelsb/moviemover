@@ -28,6 +28,7 @@ public class TVShow extends VideoNew {
 		// TODO
 		// Convert stripNameTV
 		// Set season and episode in here
+		return "";
 	}
 	
 }
