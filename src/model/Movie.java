@@ -12,7 +12,6 @@ public class Movie extends VideoNew {
 
 	private String year;
 
-
 	public Movie(File movie) {
 		this(movie, true);
 	}
@@ -28,6 +27,5 @@ public class Movie extends VideoNew {
 		// Set year in here
 		return "";
 	}
-
 
 }
