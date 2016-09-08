@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 
 // I want this to actually be and abstract class
-public class VideoNew { 
+public abstract class VideoNew  {
 	
 	private String title;
 	private String quality;
@@ -17,30 +17,25 @@ public class VideoNew {
 	private File video;
 
 	
-	private File movieFile;
 	private File DestLoc = null;
-
 	// private String fileName; //full name of file with ext  not the location
-	private String parentName;  
+	private String parentName;
 
-	private boolean type; // true = movie false = TV show
-	private String season;  //eg Season 1 (blank for movies)
-	private String tvname;  //Name of Tv Show or Movie
 
-	private String quality; // true = 720p false = 1080p
-	private String filetype; //.mkv, .mp4, .avi, .rar
+
+//	private boolean type; // true = movie false = TV show
+//	private String season;  //eg Season 1 (blank for movies)
+//	private String tvname;  //Name of Tv Show or Movie
+
+	//private String quality; // true = 720p false = 1080p
+//	private String filetype; //.mkv, .mp4, .avi, .rar
 	
-	private boolean copy;// true = copy false = just move	
-	
-	public Video(File video) {
-		this(video, true)
-	}
+	private boolean copy;// true = copy false = just move
 
-	public Video(File video, boolean copy) {
+	public VideoNew(File video, boolean copy) {
 		this.copy=copy;
 		init(video);
 	}
-
 
 
 
@@ -98,18 +93,19 @@ public class VideoNew {
 		// Possibly do a combination of stripNameTV and stripNameMovie
 		// if it is different for Movies and TVShows, then make this abstract
 		// if abstract, will this call the inherited classes?
+		return "";
 	}
 
 
-	private String getVideoQuality() {		
+	private String getVideoQuality() {
 
 		String fileOrFolder = this.fileName + this.parentName;
-		
-		if(fileOrFolder.contains("720p"))
+
+		if (fileOrFolder.contains("720p"))
 			return "720p";
-		else if(fileOrFolder.contains("1080p"))
+		else if (fileOrFolder.contains("1080p"))
 			return "1080p";
-		else 
+		else
 			return "Non HD";
 	}
 	
@@ -137,7 +133,7 @@ public class VideoNew {
 		// 	sn=sn.substring(0,sn.length()-1);
 		// }
 
-		sn = sn.strip();
+		sn = sn.trim();
 
 		//add functionality to capitalize first letter of each word TODO
 	
@@ -178,7 +174,7 @@ public class VideoNew {
 		// 	s=s.substring(0,s.length()-1);
 		// }
 
-		sn = sn.strip();
+		s = s.trim();
 
 		//add functionality to capitalize first letter of each word TODO
 	
@@ -211,17 +207,17 @@ public class VideoNew {
 	public boolean move() {
 
 		try {
-				if(copy) 
-					FileUtils.copyFileToDirectory(this.movieFile, this.DestLoc);
-				else
-					FileUtils.moveFileToDirectory(this.movieFile,this.DestLoc, true);
+			if (copy)
+				FileUtils.copyFileToDirectory(this.video, this.DestLoc);
+			else
+				FileUtils.moveFileToDirectory(this.video, this.DestLoc, true);
 
-				return true;
+			return true;
 
-			} catch (Exception e) {
-				e.printStackTrace();
-				return false;
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	
