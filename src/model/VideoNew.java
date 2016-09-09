@@ -40,7 +40,6 @@ public abstract class VideoNew {
         init(video);
     }
 
-
     private void init(File video) {
         this.video = video;
         this.fileName = video.getName();
@@ -50,7 +49,7 @@ public abstract class VideoNew {
         this.ext = getExtension();
     }
 
-    public static VideoNew createVideoType(File video) {
+    public static VideoNew createVideoType(File video, boolean copy) {
 
         Pattern pattern = Pattern.compile("(.*)s(\\d+)e(\\d+).*");
         Matcher matcher = pattern.matcher(video.getName());
@@ -59,10 +58,18 @@ public abstract class VideoNew {
             String tvShowName = matcher.group(0);
             String season = matcher.group(1);
             String episode = matcher.group(2);
-            return new TVShow(video, cleanUp(tvShowName), season, episode);
+            return new TVShow(video, cleanUp(tvShowName), season, episode, copy);
         }
 
-        return new Movie(video);
+        return new Movie(video, copy);
+    }
+
+    public static VideoNew createVideoType(File video) {
+        return createVideoType(video, true);
+    }
+
+    public static VideoNew createVideoType(String fileName, boolean copy) {
+        return createVideoType(new File(fileName), copy);
     }
 
     public static VideoNew createVideoType(String fileName) {
@@ -139,10 +146,11 @@ public abstract class VideoNew {
     public boolean move() {
 
         try {
-            if (copy)
+            if (copy) {
                 FileUtils.copyFileToDirectory(this.video, this.DestLoc);
-            else
+            } else {
                 FileUtils.moveFileToDirectory(this.video, this.DestLoc, true);
+            }
 
             return true;
 
@@ -152,15 +160,11 @@ public abstract class VideoNew {
         }
     }
 
+    public File getVideo() {
+        return video;
+    }
 
-    // public String getInfo() {
-
-    // 	String info = "";
-    // 	if(copy)
-    // 		info+=this.fileName+" was copied to " + this.DestLoc.getAbsolutePath();
-    // 	else
-    // 		info+=this.fileName+" was moved to " + this.DestLoc.getAbsolutePath();
-
-    // 	return info;
-    // }
+    public String getInfo() {
+        return this.video + " was " + (copy? "copied" : "moved") + " to " + this.DestLoc.getAbsolutePath();
+    }
 }
