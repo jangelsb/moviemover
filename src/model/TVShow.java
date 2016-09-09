@@ -22,8 +22,8 @@ public class TVShow extends VideoNew {
 		super(tvShow, copy);
 	}
 
-	public TVShow(File tvShow, String tvShowName, String season, String episode) {
-		super(tvShow, true);
+	public TVShow(File tvShow, String tvShowName, String season, String episode, boolean copy) {
+		super(tvShow, copy);
 		this.tvShowName = tvShowName;
 		this.season = season;
 		this.episode = episode;
