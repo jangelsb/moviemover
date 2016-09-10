@@ -6,26 +6,27 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 
-// I want this to actually be and abstract class
 public abstract class Video {
-
-    protected String movieD = "playground/movies/";
-    protected String tvD = "playground/tvshows/";
 
     protected String quality;
     protected String ext;
     protected String fileName;
     protected File video;
 
+    protected String videoTypeLoc;
     protected String destLoc;
     protected File destination = null;
     protected String parentName;
 
+    private boolean copy; // true = copy false = just move
+
+    public static String tvLoc = "playground/tvshows/";
+    public static String movieLoc = "playground/movies/";
+
     enum Type {
         MOVIE, TVSHOW
-    }
 
-    private boolean copy;// true = copy false = just move
+    }
 
     public Video(File video, boolean copy) {
         this.copy = copy;
@@ -96,6 +97,7 @@ public abstract class Video {
         return "Non HD";
     }
 
+    // This won't fail because to get to this point, it has to have an extension
     private String getExtension() {
         return this.fileName.substring(this.fileName.lastIndexOf("."));
     }
