@@ -20,6 +20,10 @@ public abstract class Video {
 
     private boolean copy; // true = copy false = just move
 
+    // A number I have come up with from using this program for years, not too small, not too large
+    public static final int SIZE_THRESHHOLD = 78643200; // 78.64 MBs
+    public static final String[] EXTS = {".avi", ".mkv", ".mp4"};
+
     public static String tvLoc = "playground/tvshows/";
     public static String movieLoc = "playground/movies/";
 
@@ -97,9 +101,13 @@ public abstract class Video {
         return "Non HD";
     }
 
-    // This won't fail because to get to this point, it has to have an extension
     private String getExtension() {
-        return this.fileName.substring(this.fileName.lastIndexOf("."));
+        return Video.getExtension(this.fileName);
+    }
+
+    public static String getExtension(String fileName) {
+        int index = fileName.lastIndexOf(".");
+        return index > -1 ? fileName.substring(index) : "unknown";
     }
 
     protected boolean setUpDest() {
