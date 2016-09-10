@@ -3,14 +3,10 @@ package controller;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 
 import com.github.junrar.Archive;
@@ -20,6 +16,8 @@ import com.github.junrar.rarfile.FileHeader;
 
 import model.VideoNew;
 
+import static java.lang.System.exit;
+
 
 public class mainNew {
 
@@ -28,151 +26,89 @@ public class mainNew {
     static ArrayList<VideoNew> videos = new ArrayList<>();
     static HashSet<String> whiteList = new HashSet<>();
 
-    static String  importL = "playground/import/";
-    static String movielogloc = importL+".moviemover";
-    static String infologloc = importL+".mmlog";
+    static String  importLoc = "playground/import/";
+    static String whiteListLogLoc = importLoc+".moviemover";
+    static String infoLogLoc = importLoc+".mmlog";
 
+    static File importDir = null;
+    static File whiteListLog = null;
+    static File infoLog = null;
 
-    public static boolean noNewMovies = true;
-
-    public static void mainNew(String[] args) {
-
+    public static void main(String[] args) {
 
         setUp();
 
-        String importloc = importL;
+        if(findNewVideos(importDir)) {
+            moveVideos();
+        }
+        else {
+            myLog(getCurrentTime() + ": No new videos found.\n");
+        }
 
-        File mlog = new File(movielogloc);
-        File ilog = new File(infologloc);
+        finish();
+    }
 
+    public static void setUp() {
 
-        if (!ilog.exists()) {
+        initializeLogs();
+
+        videos.clear();
+        whiteList.clear();
+
+        loadWhiteList(whiteListLog);
+    }
+
+//  TODO: better name for this function, e.g., initializePIVFiles or something
+    public static void initializeLogs() {
+
+        whiteListLog = new File(whiteListLogLoc);
+        infoLog = new File(infoLogLoc);
+        importDir = new File(importLoc);
+
+        if (!infoLog.exists()) {
             try {
-                ilog.createNewFile();
+                infoLog.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        if(!mlog.exists()) {
-            fillMovieLog();
-            return;
+        if(!whiteListLog.exists()) {
+            fillWhiteListLog();
+            myLog(getCurrentTime() + ": Created new whitelist log.\n");
+            finish();
         }
-
-
-
-
-//        load mlog into a hashset used to compare with newfiles
-
-        loadWhiteList(mlog);
-
-        if(importVideos(importloc)) {
-            myLog("Done.\n");
-//            writeFoundMovie();
-            myLog("Moving videos to correct directories...");
-            moveVideos();
-//            writeMovieInfo();
-            myLog("Done.");
-        }
-        else {
-            myLog("No new videos found.");
-        }
-
-
-        myLog("------------------------------");
-
-        //printVideos();
-
-
-
-        //writeToMovieLog("Test");
-        //readFile();
-
-    }
-
-    public static void setUp() {
-        videos.clear();
-        whiteList.clear();
-
-        // add other setup stuff
     }
 
     public static void loadWhiteList(File mlog) {
 
-        Date d = new Date();
-        myLog(d.toString()+"\nSearching for new videos / setting up...");
-
         String line = null;
 
         try {
-            // FileReader reads text files in the default encoding.
-            FileReader fileReader =
-                    new FileReader(mlog);
+            FileReader fileReader = new FileReader(mlog);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-            // Always wrap FileReader in BufferedReader.
-            BufferedReader bufferedReader =
-                    new BufferedReader(fileReader);
-            //it works great
             while((line = bufferedReader.readLine()) != null)
                 whiteList.add(line);
 
-            // Always close files.
             bufferedReader.close();
         }
         catch(Exception e) {
         }
     }
 
-
-//    private static void writeFoundMovie() {
-//
-//        myLog("Found movies:");
-//
-//        for(VideoNew v : videos)
-//        {
-//            myLog(v.getVideo().getName());
-//        }
-//
-//        myLog(""); // adds a new line
-//
-//
-//    }
-//
-//    private static void writeMovieInfo() {
-//
-//
-//        for(VideoNew v : videos)
-//        {
-//            myLog(v.getInfo());
-//        }
-//
-//
-//    }
-
-
-
-
-    public static void fillMovieLog() {
-        File importloc = new File(importL);
-
-        for(File f : importloc.listFiles()) {
-            writeToMovieLog(f.getAbsolutePath());
+    public static void fillWhiteListLog() {
+        for(File file : importDir.listFiles()) {
+            writeToWhiteListLog(file.getName());
         }
-
     }
 
-    public static void writeToMovieLog(String file) {
+    public static void writeToLog(File log, String text){
+
         BufferedWriter writer = null;
         try {
-
-
-            File movielog = new File(movielogloc);
-
-            // This will output the full path where the file will be written to...
-            // System.out.println(logFile.getCanonicalPath());
-
-            writer = new BufferedWriter(new FileWriter(movielog,true));
-            writer.write(file+"\n");
+            writer = new BufferedWriter(new FileWriter(log,true));
+            writer.write(text);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -183,260 +119,168 @@ public class mainNew {
             }
         }
 
+    }
+
+    public static void writeToWhiteListLog(String file) {
+        writeToLog(whiteListLog, file + "\n");
     }
 
     public static void writeToInfoLog(String info) {
-        BufferedWriter writer = null;
-        try {
-
-
-            File infolog = new File(infologloc);
-
-            // This will output the full path where the file will be written to...
-            // System.out.println(logFile.getCanonicalPath());
-
-            writer = new BufferedWriter(new FileWriter(infolog,true));
-            writer.write(info+"\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                // Close the writer regardless of what happens...
-                writer.close();
-            } catch (Exception e) {
-            }
-        }
-
+        writeToLog(infoLog, info);
     }
 
-    public static boolean isFileNew(String fileloc) {
-        return !whiteList.contains(fileloc);
+    public static boolean isFileNew(String fileName) {
+        return !whiteList.contains(fileName);
     }
 
-
-    public static void readFile() {
-        // The name of the file to open.
-        // String fileName = ".moviemover";
-
-        // This will reference one line at a time
-        String line = null;
-
-        try {
-            // FileReader reads text files in the default encoding.
-            FileReader fileReader =
-                    new FileReader(movielogloc);
-
-            // Always wrap FileReader in BufferedReader.
-            BufferedReader bufferedReader =
-                    new BufferedReader(fileReader);
-//it works great
-            while((line = bufferedReader.readLine()) != null) {
-
-                if(line.equalsIgnoreCase("Hello world!"))  //
-                    System.out.println("trrrrue");
-
-                System.out.println(line);
-            }
-
-            // Always close files.
-            bufferedReader.close();
-        }
-        catch(FileNotFoundException ex) {
-            System.out.println(
-                    "Unable to open file '" +
-                            movielogloc + "'");
-        }
-        catch(IOException ex) {
-            System.out.println(
-                    "Error reading file '"
-                            + movielogloc + "'");
-        }
+    public static boolean isFileNew(File file) {
+        return isFileNew(file.getName());
     }
 
     private static void moveVideos() {
-        for(VideoNew v : videos) {
-            v.move();
+        myLog(getCurrentTime() + ": Moving videos to correct directories... \n");
+
+        for(VideoNew video : videos) {
+            video.move();
+            myLog(" - " + video.getInfo() + "\n");
         }
+
+        myLog("Done.\n");
     }
 
-    private static void printVideos() {
-        for(VideoNew v : videos) {
-            System.out.println(v.getVideo().getAbsolutePath());
-        }
-    }
 
-    private static void printVideosInfo() {
-        for(int i=0; i<videos.size(); i++) {
-            System.out.println(videos.get(i).getInfo());
-        }
-    }
+    public static boolean findNewVideos(File importDir) {
 
-    public static boolean importVideos(String directoryName) {
+        myLog(getCurrentTime() + ": Searching for videos... \n");
 
         boolean foundMovies = false;
+        File currentDir = importDir;
+        Queue<File> dirs = new ArrayDeque<>();
 
-        File directory = new File(directoryName);
-        // get all the files from a directory
-        File[] fList = directory.listFiles();
-        for (File file : fList) {
-            if(isFileNew(file.getAbsolutePath())) {
+        dirs.add(currentDir);
 
-                if(isAVideo(file)) {
-//                if (file.isFile() && (file.getAbsolutePath().endsWith(".mkv") || file.getAbsolutePath().endsWith(".avi") || file.getAbsolutePath().endsWith(".mp4")) && file.length()>78643200) { // 75mbs  1000000000b = 1GB
-                    videos.add(VideoNew.createVideoType(file));
-                    //writeToMovieLog(findParentFile(file));
-
-
-                    if(file.getParentFile().equals(new File(importL)))
-                        writeToMovieLog(file.getAbsolutePath());
-                    else
-                        writeToMovieLog(file.getParentFile().getAbsolutePath());
-                    foundMovies = true;
-                }
-                else if(isARarVideo(file)) {
-//                else if(file.isFile() && (file.getPath().endsWith(".rar") && isARarVideo(file))) { //&& (rarn.contains("720p") || rarn.contains("1080p"))))
-
-                    // move extraction code to a new function (it's currently in isARarVideo
-                    
-                    File videoFromRar = getVideoFromRar(file);
-                    videos.add(VideoNew.createVideoType(videoFromRar, false));
-
-                    if(file.getParentFile().equals(new File(importL)))
-                        writeToMovieLog(file.getAbsolutePath());
-                    else
-                        writeToMovieLog(file.getParentFile().getAbsolutePath());
-
-                    foundMovies = true;
-                }
-                else if (file.isDirectory()) {
-                    importVideos(file.getAbsolutePath());
+        while(!dirs.isEmpty())
+        {
+            currentDir = dirs.remove();
+            for (File file : currentDir.listFiles())
+            {
+                if(isFileNew(file))
+                {
+                    if(isAVideo(file))
+                    {
+                        whiteListFile(importDir, file);
+                        videos.add(VideoNew.createVideoType(file));
+                        myLog(" + " + file.getName() + "\n");
+                        foundMovies = true;
+                    }
+                    else if(isARarVideo(file))
+                    {
+                        whiteListFile(importDir, file);
+                        File videoFromRar = getVideoFromRar(file);
+                        videos.add(VideoNew.createVideoType(videoFromRar, false));
+                        myLog(" + " + videoFromRar.getName() + "\n");
+                        foundMovies = true;
+                    }
+                    else if (file.isDirectory())
+                    {
+                        dirs.add(file);
+                    }
                 }
             }
         }
+
+        myLog("Done.\n");
 
         return foundMovies;
     }
 
+
+    public static boolean isAVideo(String fileName, long fileSize) {
+        return (fileName.endsWith(".mkv") || fileName.endsWith(".avi") || fileName.endsWith(".mp4")) && fileSize > VIDEO_SIZE_THRESHHOLD;
+    }
+
     public static boolean isAVideo (File file) {
-        return file.isFile() && (file.getAbsolutePath().endsWith(".mkv") || file.getAbsolutePath().endsWith(".avi") || file.getAbsolutePath().endsWith(".mp4")) && file.length() > VIDEO_SIZE_THRESHHOLD;
-    }
-    private static String findParentFile(File f) {
-
-        String pname = f.getName();
-        File basef = f;
-        // TODO Auto-generated method stub
-        return null;
+        return file.isFile() && isAVideo(file.getAbsolutePath(), file.length());
     }
 
+    public static void whiteListFile(File directory, File file) {
+        if(file.getParentFile().equals(directory))
+            writeToWhiteListLog(file.getName());
+        else
+            writeToWhiteListLog(file.getParentFile().getName());
+    }
 
-    private static boolean isARarVideo(File f) {
+    public static void whiteListFile(File file) {
+        writeToWhiteListLog(file.getParentFile().getName());
+    }
+    private static boolean isARarVideo(File file) {
 
-        if (!f.isFile() || !f.getPath().endsWith(".rar"))
+        if (!file.isFile() || !file.getPath().endsWith(".rar"))
             return false;
 
         Archive rar = null;
         try {
-            rar = new Archive(f);
+            rar = new Archive(file);
         } catch (RarException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        List<FileHeader> files = rar.getFileHeaders();
+        List<FileHeader> filesInRar = rar.getFileHeaders();
 
-        for (FileHeader hd : files) {
+        for (FileHeader fileHeader : filesInRar) {
 
-            String filen = hd.getFileNameString();
-            long filesize = hd.getFullUnpackSize();
-            if(filen.endsWith(".mkv") || filen.endsWith(".avi") || filen.endsWith(".mp4") && filesize>400000000) { // 1000000000b = 1GB  //250000000 = 250 MBs
+            String fileName = fileHeader.getFileNameString();
+            long fileSize = fileHeader.getFullUnpackSize();
+
+            if(isAVideo(fileName, fileSize))
                 return true;
-            }
-
         }
 
         return false;
     }
 
-    private static File getVideoFromRar(File f) {
+//    TODO there is a chance the rar file has more items than just the one file
+//    should clean up all the files made except for the movie files...
+    private static File getVideoFromRar(final File videoRar) {
 
-
-        final File rar = f;
-
-        final File destFolder = new File(rar.getParentFile().getAbsolutePath());
+        final File destFolder = new File(videoRar.getParentFile().getAbsolutePath());
 
         ExtractArchive extractArchive = new ExtractArchive();
-        extractArchive.extractArchive(rar, destFolder);
-
-
-        File nmovie = null;
+        extractArchive.extractArchive(videoRar, destFolder);
 
         File[] fList = destFolder.listFiles();
-        for (File file : fList) {
-            if (file.isFile() && (file.getPath().endsWith(".mkv") || file.getPath().endsWith(".avi") || file.getPath().endsWith(".mp4")) && file.length()>400000000) { // 1000000000b = 1GB
-                nmovie = file;
-                break;
-            }
-        }
+        for (File file : fList)
+            if (isAVideo(file))
+                return file;
 
-        return nmovie;
+        return null;
     }
 
     private static void myLog(String message) {
-        System.out.println(message);
+        System.out.print(message);
         writeToInfoLog(message);
     }
 
-//    public static void printFiles() {
-//        for(int i=1; i<ALLFILES.size(); i++) { //stars at 1 because at location 0 its the base folder
-//            File f = ALLFILES.get(i);
-//
-//            if(f.isFile())
-//                System.out.println("FILE - "+ f.getAbsolutePath());
-//            else
-//                System.out.println("FOLDER - "+f.getAbsolutePath());
-//        }
-//    }
+    private static void myLog(String message, int dest) {
+        switch (dest){
+            case 0:
+                System.out.println(message);
+                break;
+            case 1:
+                writeToInfoLog(message);
+                break;
+        }
+    }
 
-//    public static void findExts() {
-//
-//        for(File f : ALLFILES) {
-//            String fn = f.getName();
-//            String fe = fn.substring(fn.lastIndexOf("."));
-//            boolean checkE = true;
-//
-//            for(String check : exts) {
-//                if(check.equalsIgnoreCase(fe)) {
-//                    checkE=false;
-//                    break;
-//                }
-//            }
-//
-//            if(checkE)
-//                exts.add(fe);
-//        }
-//
-//    }
 
-//    public static void printExts() {
-//        for(String s : exts) {
-//            System.out.println(s);
-//        }
-//    }
+    private static String getCurrentTime() {
+        return new Date().toString();
+    }
 
-//    bubble sort...bad
-//    private static void sortFilesBySizeDes() {
-//        for(int i = 0; i<ALLFILES.size(); i++) {
-//            for(int j = 0; j<ALLFILES.size()-1;j++) {
-//                if (ALLFILES.get(j).length() < ALLFILES.get(j+1).length()) {
-//                    File tmp = ALLFILES.get(j+1);
-//                    ALLFILES.set(j+1, ALLFILES.get(j));
-//                    ALLFILES.set(j, tmp);
-//                }
-//            }
-//        }
-//    }
-
+    private static void finish() {
+        myLog("------------------------------\n");
+        exit(0);
+    }
 }
