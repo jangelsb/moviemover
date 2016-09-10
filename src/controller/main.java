@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-
+import static java.lang.System.exit;
 
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
@@ -16,19 +16,17 @@ import com.github.junrar.rarfile.FileHeader;
 
 import model.Video;
 
-import static java.lang.System.exit;
-
-
 public class main {
 
-    static final int VIDEO_SIZE_THRESHHOLD = 78643200;
+    // A number I have come up with from using this program for years, not too small, not too large
+    static final int VIDEO_SIZE_THRESHHOLD = 78643200; // 78.64 MBs
 
-    static ArrayList<Video> videos = new ArrayList<>();
-    static HashSet<String> whiteList = new HashSet<>();
+    static String importLoc = "playground/import/";
+    static String whiteListLogLoc = importLoc + ".moviemover";
+    static String infoLogLoc = importLoc + ".mmlog";
 
-    static String  importLoc = "playground/import/";
-    static String whiteListLogLoc = importLoc+".moviemover";
-    static String infoLogLoc = importLoc+".mmlog";
+    static ArrayList<Video> videos = null;
+    static HashSet<String> whiteList = null;
 
     static File importDir = null;
     static File whiteListLog = null;
@@ -36,13 +34,16 @@ public class main {
 
     public static void main(String[] args) {
 
+//        TODO elapsed time for each job, total elapsed time
+//        TODO custom parameters
+
         setUp();
 
         if(findNewVideos(importDir)) {
             moveVideos();
         }
         else {
-            myLog(getCurrentTime() + ": No new videos found.\n");
+            myLog(getCurrentTime() + ": No new videos found.");
         }
 
         finish();
@@ -52,8 +53,10 @@ public class main {
 
         initializeLogs();
 
-        videos.clear();
-        whiteList.clear();
+        importDir = new File(importLoc);
+
+        videos = new ArrayList<>();
+        whiteList = new HashSet<>();
 
         loadWhiteList(whiteListLog);
     }
@@ -63,7 +66,6 @@ public class main {
 
         whiteListLog = new File(whiteListLogLoc);
         infoLog = new File(infoLogLoc);
-        importDir = new File(importLoc);
 
         if (!infoLog.exists()) {
             try {
@@ -75,7 +77,7 @@ public class main {
 
         if(!whiteListLog.exists()) {
             fillWhiteListLog();
-            myLog(getCurrentTime() + ": Created new whitelist log.\n");
+            myLog(getCurrentTime() + ": Created new whitelist log.");
             finish();
         }
     }
@@ -108,7 +110,7 @@ public class main {
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(log,true));
-            writer.write(text);
+            writer.write(text + "\n");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -122,7 +124,7 @@ public class main {
     }
 
     public static void writeToWhiteListLog(String file) {
-        writeToLog(whiteListLog, file + "\n");
+        writeToLog(whiteListLog, file);
     }
 
     public static void writeToInfoLog(String info) {
@@ -138,20 +140,20 @@ public class main {
     }
 
     private static void moveVideos() {
-        myLog(getCurrentTime() + ": Moving videos to correct directories... \n");
+        myLog(getCurrentTime() + ": Moving videos to correct directories...");
 
         for(Video video : videos) {
             video.move();
-            myLog(" - " + video.getInfo() + "\n");
+            myLog(" - " + video.getInfo());
         }
 
-        myLog("Done.\n");
+        myLog("Done.");
     }
 
 
     public static boolean findNewVideos(File importDir) {
 
-        myLog(getCurrentTime() + ": Searching for videos... \n");
+        myLog(getCurrentTime() + ": Searching for videos...");
 
         boolean foundMovies = false;
         File currentDir = importDir;
@@ -170,15 +172,17 @@ public class main {
                     {
                         whiteListFile(importDir, file);
                         videos.add(Video.createVideoType(file));
-                        myLog(" + " + file.getName() + "\n");
+                        myLog(" + " + file.getName());
                         foundMovies = true;
                     }
                     else if(isARarVideo(file))
                     {
                         whiteListFile(importDir, file);
+                        myLog("   > unraring: " + file.getName() + "...");
                         File videoFromRar = getVideoFromRar(file);
                         videos.add(Video.createVideoType(videoFromRar, false));
-                        myLog(" + " + videoFromRar.getName() + "\n");
+                        myLog("   > Done.");
+                        myLog(" + " + videoFromRar.getName());
                         foundMovies = true;
                     }
                     else if (file.isDirectory())
@@ -189,7 +193,7 @@ public class main {
             }
         }
 
-        myLog("Done.\n");
+        myLog("Done.");
 
         return foundMovies;
     }
@@ -203,8 +207,8 @@ public class main {
         return file.isFile() && isAVideo(file.getAbsolutePath(), file.length());
     }
 
-    public static void whiteListFile(File directory, File file) {
-        if(file.getParentFile().equals(directory))
+    public static void whiteListFile(File importDir, File file) {
+        if(file.getParentFile().equals(importDir))
             writeToWhiteListLog(file.getName());
         else
             writeToWhiteListLog(file.getParentFile().getName());
@@ -259,7 +263,7 @@ public class main {
     }
 
     private static void myLog(String message) {
-        System.out.print(message);
+        System.out.println(message);
         writeToInfoLog(message);
     }
 
@@ -280,7 +284,7 @@ public class main {
     }
 
     private static void finish() {
-        myLog("------------------------------\n");
+        myLog("------------------------------");
         exit(0);
     }
 }

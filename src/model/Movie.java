@@ -2,7 +2,6 @@ package model;
 
 import java.io.File;
 
-
 public class Movie extends Video {
 
 	private String year;
@@ -13,7 +12,8 @@ public class Movie extends Video {
 
 	public Movie(File movie, boolean copy) {
 		super(movie, copy);
-		this.destLoc = this.movieD + this.quality + "/";
+
+		this.destLoc = this.movieLoc + this.quality + "/";
 		super.setUpDest();
 	}
 }
