@@ -10,28 +10,21 @@ import org.apache.commons.io.FileUtils;
 // I want this to actually be and abstract class
 public abstract class VideoNew {
 
-    protected String title;
+    protected String movieD = "playground/movies/";
+    protected String tvD = "playground/tvshows/";
+
     protected String quality;
     protected String ext;
     protected String fileName;
     protected File video;
 
-
-    protected File DestLoc = null;
-    // protected String fileName; //full name of file with ext  not the location
+    protected String destLoc;
+    protected File destination = null;
     protected String parentName;
 
     enum Type {
         MOVIE, TVSHOW
     }
-
-
-//	private boolean type; // true = movie false = TV show
-//	private String season;  //eg Season 1 (blank for movies)
-//	private String tvname;  //Name of Tv Show or Movie
-
-    //private String quality; // true = 720p false = 1080p
-//	private String filetype; //.mkv, .mp4, .avi, .rar
 
     private boolean copy;// true = copy false = just move
 
@@ -44,20 +37,19 @@ public abstract class VideoNew {
         this.video = video;
         this.fileName = video.getName();
         this.parentName = video.getParentFile().getName();
-        this.title = getTitle();
         this.quality = getVideoQuality();
         this.ext = getExtension();
     }
 
     public static VideoNew createVideoType(File video, boolean copy) {
 
-        Pattern pattern = Pattern.compile("(.*)s(\\d+)e(\\d+).*");
+        Pattern pattern = Pattern.compile("(.*)s(\\d+)e(\\d+).*", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(video.getName());
 
         if(matcher.find()) {
-            String tvShowName = matcher.group(0);
-            String season = matcher.group(1);
-            String episode = matcher.group(2);
+            String tvShowName = matcher.group(1);
+            String season = matcher.group(2);
+            String episode = matcher.group(3);
             return new TVShow(video, cleanUp(tvShowName), season, episode, copy);
         }
 
@@ -78,7 +70,7 @@ public abstract class VideoNew {
 
     public static Type getVideoType(String fileName) {
 
-        Pattern pattern = Pattern.compile("s\\d+e\\d+");
+        Pattern pattern = Pattern.compile("s\\d+e\\d+", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(fileName);
 
         if(matcher.find())
@@ -91,65 +83,38 @@ public abstract class VideoNew {
         return text.replace('.', ' ').trim();
     }
 
-    private String getTitle() {
-
-        // TODO
-        // Possibly do a combination of stripNameTV and stripNameMovie
-        // if it is different for Movies and TVShows, then make this abstract
-        // if abstract, will this call the inherited classes?
-        return "";
-    }
-
 
     private String getVideoQuality() {
 
         String fileOrFolder = this.fileName + this.parentName;
 
-        Pattern pattern = Pattern.compile(".*(720[p|P]|1080[p|P]).*");
+        Pattern pattern = Pattern.compile(".*(720p|1080p).*", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(fileOrFolder);
 
         if(matcher.find())
-            return matcher.group(0);
+            return matcher.group(1).toLowerCase();
 
         return "Non HD";
-    }
-
-    private String stripNameMovie() {
-
-        //TODO might not actually be needed
-        return "";
     }
 
     private String getExtension() {
         return this.fileName.substring(this.fileName.lastIndexOf("."));
     }
 
-    // private boolean setupDest() // TODO windows vs mac
-    // {
-    // 	if(type)
-    // 	{
-    // 		//DestLoc = new File("A:\\My Libraries\\Videos\\Movies\\"+this.quality+"\\"); //TODO location for movies
-    // 		DestLoc = new File(this.movieD+this.quality+this.ossep);
-    // 	}
-    // 	else
-    // 	{//+this.quality+"/TV Shows/"+this.tvname+"/"+this.season+"/");
-
-    // 		//DestLoc = new File("A:\\My Libraries\\Videos\\TV Shows\\"+this.quality+"\\TV Shows\\"+this.tvname+"\\"+this.season+"\\"); //TODO location for tv
-    // 		DestLoc = new File(this.tvD+this.quality+this.ossep+"TV Shows"+this.ossep+this.tvname+this.ossep+this.season+this.ossep);
-    // 	}	//A:\My Libraries\Videos\TV Shows\   720p\     TV Shows\    Agents of Shield\    Season 1\
-
-    // 	DestLoc.mkdirs(); // instead of mkdir b/c theres ton of new folders
-    // 	return true;
-    // }
+    protected boolean setUpDest() {
+        this.destination = new File(destLoc);
+        return destination.mkdirs();
+    }
 
 
+    //TODO skip if exists
     public boolean move() {
 
         try {
             if (copy) {
-                FileUtils.copyFileToDirectory(this.video, this.DestLoc);
+                FileUtils.copyFileToDirectory(this.video, this.destination);
             } else {
-                FileUtils.moveFileToDirectory(this.video, this.DestLoc, true);
+                FileUtils.moveFileToDirectory(this.video, this.destination, true);
             }
 
             return true;
@@ -165,6 +130,6 @@ public abstract class VideoNew {
     }
 
     public String getInfo() {
-        return this.video + " was " + (copy? "copied" : "moved") + " to " + this.DestLoc.getAbsolutePath();
+        return this.fileName + " was " + (copy? "COPIED" : "MOVED") + " to " + this.destination.getPath();
     }
 }

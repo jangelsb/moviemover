@@ -18,14 +18,7 @@ public class Movie extends VideoNew {
 
 	public Movie(File movie, boolean copy) {
 		super(movie, copy);
+		this.destLoc = this.movieD + this.quality + "/";
+		super.setUpDest();
 	}
-
-	private String getTitle() {
-
-		// TODO
-		// Convert stripNameMovie
-		// Set year in here
-		return "";
-	}
-
 }
