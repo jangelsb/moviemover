@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+
 import static java.lang.System.exit;
 
 import com.github.junrar.Archive;
@@ -17,9 +18,6 @@ import com.github.junrar.rarfile.FileHeader;
 import model.Video;
 
 public class main {
-
-    // A number I have come up with from using this program for years, not too small, not too large
-    static final int VIDEO_SIZE_THRESHHOLD = 78643200; // 78.64 MBs
 
     static String importLoc = "playground/import/";
     static String whiteListLogLoc = importLoc + ".moviemover";
@@ -200,7 +198,8 @@ public class main {
 
 
     public static boolean isAVideo(String fileName, long fileSize) {
-        return (fileName.endsWith(".mkv") || fileName.endsWith(".avi") || fileName.endsWith(".mp4")) && fileSize > VIDEO_SIZE_THRESHHOLD;
+        HashSet<String> exts = new HashSet<String>(Arrays.asList(Video.EXTS));
+        return exts.contains(Video.getExtension(fileName)) && fileSize > Video.SIZE_THRESHHOLD;
     }
 
     public static boolean isAVideo (File file) {
@@ -287,4 +286,5 @@ public class main {
         myLog("------------------------------");
         exit(0);
     }
+
 }
