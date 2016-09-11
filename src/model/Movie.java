@@ -6,6 +6,8 @@ public class Movie extends Video {
 
 	private String year;
 
+	public static String rootLoc = "playground/movies/";
+
 	public Movie(File movie) {
 		this(movie, true);
 	}
@@ -13,7 +15,7 @@ public class Movie extends Video {
 	public Movie(File movie, boolean copy) {
 		super(movie, copy);
 
-		this.destLoc = this.movieLoc + this.quality + "/";
+		this.destLoc = this.rootLoc + this.quality + "/";
 		super.setUpDest();
 	}
 }
