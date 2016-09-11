@@ -28,7 +28,7 @@ public abstract class Video {
 
     }
 
-    public Video(File video, boolean copy) {
+    protected Video(File video, boolean copy) {
         this.copy = copy;
         init(video);
     }
