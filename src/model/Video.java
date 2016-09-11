@@ -13,7 +13,6 @@ public abstract class Video {
     protected String fileName;
     protected File video;
 
-    protected String videoTypeLoc;
     protected String destLoc;
     protected File destination = null;
     protected String parentName;
@@ -23,9 +22,6 @@ public abstract class Video {
     // A number I have come up with from using this program for years, not too small, not too large
     public static final int SIZE_THRESHHOLD = 78643200; // 78.64 MBs
     public static final String[] EXTS = {".avi", ".mkv", ".mp4"};
-
-    public static String tvLoc = "playground/tvshows/";
-    public static String movieLoc = "playground/movies/";
 
     enum Type {
         MOVIE, TVSHOW
