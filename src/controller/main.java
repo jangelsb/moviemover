@@ -42,9 +42,6 @@ public class main {
         if(findNewVideos(importDir)) {
             moveVideos();
         }
-        else {
-            myLog(getCurrentTime() + ": No new videos found.");
-        }
 
         finish();
     }
@@ -148,7 +145,7 @@ public class main {
             myLog(" - " + video.getInfo());
         }
 
-        myLog("Done.");
+        myLog("Done.\n");
     }
 
 
@@ -194,7 +191,7 @@ public class main {
             }
         }
 
-        myLog("Done.");
+        myLog(foundMovies ? "Done.\n" : "No new videos found.\n");
 
         return foundMovies;
     }
