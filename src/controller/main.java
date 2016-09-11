@@ -30,6 +30,8 @@ public class main {
     static File whiteListLog = null;
     static File infoLog = null;
 
+    private static long startTime = 0;
+
     public static void main(String[] args) {
 
 //        TODO elapsed time for each job, total elapsed time
@@ -49,9 +51,9 @@ public class main {
 
     public static void setUp() {
 
-        initializeLogs();
+        startTime = System.currentTimeMillis();
 
-        importDir = new File(importLoc);
+        initializeLogs();
 
         videos = new ArrayList<>();
         whiteList = new HashSet<>();
@@ -64,6 +66,7 @@ public class main {
 
         whiteListLog = new File(whiteListLogLoc);
         infoLog = new File(infoLogLoc);
+        importDir = new File(importLoc);
 
         if (!infoLog.exists()) {
             try {
@@ -283,6 +286,8 @@ public class main {
     }
 
     private static void finish() {
+        long stopTime = System.currentTimeMillis();
+        myLog(String.format("Time Elapsed: %s secs", (stopTime - startTime)/1000.0));
         myLog("------------------------------");
         exit(0);
     }
