@@ -20,12 +20,11 @@ public abstract class Video {
     private boolean copy; // true = copy false = just move
 
     // A number I have come up with from using this program for years, not too small, not too large
-    public static final int SIZE_THRESHHOLD = 78643200; // 78.64 MBs
+    public static final int SIZE_THRESHOLD = 78643200; // 78.64 MBs
     public static final String[] EXTS = {".avi", ".mkv", ".mp4"};
 
     enum Type {
         MOVIE, TVSHOW
-
     }
 
     protected Video(File video, boolean copy) {
@@ -83,7 +82,6 @@ public abstract class Video {
         return text.replace('.', ' ').trim();
     }
 
-
     private String getVideoQuality() {
 
         String fileOrFolder = this.fileName + this.parentName;
@@ -110,7 +108,6 @@ public abstract class Video {
         this.destination = new File(destLoc);
         return destination.mkdirs();
     }
-
 
     //TODO skip if exists
     public boolean move() {
