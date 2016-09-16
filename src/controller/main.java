@@ -1,10 +1,6 @@
 package controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -15,20 +11,19 @@ import com.github.junrar.exception.RarException;
 import com.github.junrar.extract.ExtractArchive;
 import com.github.junrar.rarfile.FileHeader;
 
+import static model.Logging.*;
+import static model.QuasiConsts.importLoc;
+import static model.QuasiConsts.infoLogLoc;
+import static model.QuasiConsts.whiteListLogLoc;
+
 import model.Video;
 
 public class main {
-
-    static String importLoc = "playground/import/";
-    static String whiteListLogLoc = importLoc + ".moviemover";
-    static String infoLogLoc = importLoc + ".mmlog";
 
     static ArrayList<Video> videos = null;
     static HashSet<String> whiteList = null;
 
     static File importDir = null;
-    static File whiteListLog = null;
-    static File infoLog = null;
 
     private static long startTime = 0;
 
@@ -53,12 +48,10 @@ public class main {
         initializeLogs();
 
         videos = new ArrayList<>();
-        whiteList = new HashSet<>();
 
-        loadWhiteList(whiteListLog);
+        whiteList = loadWhiteList();
     }
 
-//  TODO: better name for this function, e.g., initializePIVFiles or something
     public static void initializeLogs() {
 
         whiteListLog = new File(whiteListLogLoc);
@@ -80,53 +73,10 @@ public class main {
         }
     }
 
-    public static void loadWhiteList(File mlog) {
-
-        String line = null;
-
-        try {
-            FileReader fileReader = new FileReader(mlog);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            while((line = bufferedReader.readLine()) != null)
-                whiteList.add(line);
-
-            bufferedReader.close();
-        }
-        catch(Exception e) {
-        }
-    }
-
     public static void fillWhiteListLog() {
         for(File file : importDir.listFiles()) {
             writeToWhiteListLog(file.getName());
         }
-    }
-
-    public static void writeToLog(File log, String text){
-
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(log,true));
-            writer.write(text + "\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                // Close the writer regardless of what happens...
-                writer.close();
-            } catch (Exception e) {
-            }
-        }
-
-    }
-
-    public static void writeToWhiteListLog(String file) {
-        writeToLog(whiteListLog, file);
-    }
-
-    public static void writeToInfoLog(String info) {
-        writeToLog(infoLog, info);
     }
 
     public static boolean isFileNew(String fileName) {
@@ -147,7 +97,6 @@ public class main {
 
         myLog("Done.\n");
     }
-
 
     public static boolean findNewVideos(File importDir) {
 
@@ -196,10 +145,9 @@ public class main {
         return foundMovies;
     }
 
-
     public static boolean isAVideo(String fileName, long fileSize) {
         HashSet<String> exts = new HashSet<String>(Arrays.asList(Video.EXTS));
-        return exts.contains(Video.getExtension(fileName)) && fileSize > Video.SIZE_THRESHHOLD;
+        return exts.contains(Video.getExtension(fileName)) && fileSize > Video.SIZE_THRESHOLD;
     }
 
     public static boolean isAVideo (File file) {
@@ -213,9 +161,6 @@ public class main {
             writeToWhiteListLog(file.getParentFile().getName());
     }
 
-    public static void whiteListFile(File file) {
-        writeToWhiteListLog(file.getParentFile().getName());
-    }
     private static boolean isARarVideo(File file) {
 
         if (!file.isFile() || !file.getPath().endsWith(".rar"))
@@ -261,23 +206,6 @@ public class main {
         return null;
     }
 
-    private static void myLog(String message) {
-        System.out.println(message);
-        writeToInfoLog(message);
-    }
-
-    private static void myLog(String message, int dest) {
-        switch (dest){
-            case 0:
-                System.out.println(message);
-                break;
-            case 1:
-                writeToInfoLog(message);
-                break;
-        }
-    }
-
-
     private static String getCurrentTime() {
         return new Date().toString();
     }
@@ -288,5 +216,4 @@ public class main {
         myLog("------------------------------");
         exit(0);
     }
-
 }
