@@ -1,12 +1,11 @@
 # README #
-This is a program to automate your video downloads. It can even `unrar` those pesky `rar` files. 
+This is a program to automate your video downloads. It can even unrar those pesky rar files. 
 
 
 ### How does it work? ###
-It "watches" a folder for new movies or tv shows. The default directories is
-It watches `./playground/import`
+It "watches" a folder for new movies or tv shows. The default directories it watches: `./playground/import`
 
-It copies or moves videos to `./playground/tvshows` or `./playground/movies` based on it's type.
+It copies or moves videos to `./playground/tvshows` or `./playground/movies` based on it's type. 
 
 e.g.,
 ```
