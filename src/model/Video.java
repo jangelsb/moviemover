@@ -13,7 +13,6 @@ public abstract class Video {
     protected String fileName;
     protected File video;
 
-    protected String destLoc;
     protected File destination = null;
     protected String parentName;
 
@@ -26,6 +25,11 @@ public abstract class Video {
     enum Type {
         MOVIE, TVSHOW
     }
+
+    /**
+     * Return the destination for this video.
+     */
+    protected abstract String getDestLoc();
 
     protected Video(File video, boolean copy) {
         this.copy = copy;
@@ -105,12 +109,15 @@ public abstract class Video {
     }
 
     protected boolean setUpDest() {
-        this.destination = new File(destLoc);
+        // add error checking here
+        this.destination = new File(getDestLoc());
         return destination.mkdirs();
     }
 
     //TODO skip if exists
     public boolean move() {
+
+        setUpDest();
 
         try {
             if (copy) {
@@ -132,6 +139,6 @@ public abstract class Video {
     }
 
     public String getInfo() {
-        return this.fileName + " was " + (copy? "COPIED" : "MOVED") + " to " + this.destination.getPath();
+        return this.fileName + " was _" + (copy? "COPIED" : "MOVED") + "_ to " + this.destination.getPath();
     }
 }

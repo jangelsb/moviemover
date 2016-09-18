@@ -1,6 +1,8 @@
 package controller;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -29,7 +31,6 @@ public class main {
 
     public static void main(String[] args) {
 
-//        TODO elapsed time for each job, total elapsed time
 //        TODO custom parameters
 
         setUp();
@@ -68,9 +69,30 @@ public class main {
 
         if(!whiteListLog.exists()) {
             fillWhiteListLog();
-            myLog(getCurrentTime() + ": Created new whitelist log.");
+            myLogWithTimestamp("Created new whitelist log.");
             finish();
         }
+    }
+
+    public static HashSet<String> loadWhiteList() {
+
+        HashSet<String> whiteList = new HashSet<>();
+
+        String line = null;
+
+        try {
+            FileReader fileReader = new FileReader(whiteListLog);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            while((line = bufferedReader.readLine()) != null)
+                whiteList.add(line);
+
+            bufferedReader.close();
+        }
+        catch(Exception e) {
+        }
+
+        return whiteList;
     }
 
     public static void fillWhiteListLog() {
@@ -88,19 +110,19 @@ public class main {
     }
 
     private static void moveVideos() {
-        myLog(getCurrentTime() + ": Moving videos to correct directories...");
+        myLogWithTimestamp("Moving videos to correct directories...");
 
         for(Video video : videos) {
             video.move();
             myLog(" - " + video.getInfo());
         }
 
-        myLog("Done.\n");
+        myLog("Done.");
     }
 
     public static boolean findNewVideos(File importDir) {
 
-        myLog(getCurrentTime() + ": Searching for videos...");
+        myLogWithTimestamp("Searching for videos...");
 
         boolean foundMovies = false;
         File currentDir = importDir;
@@ -140,7 +162,7 @@ public class main {
             }
         }
 
-        myLog(foundMovies ? "Done.\n" : "No new videos found.\n");
+        myLog(foundMovies ? "Done.\n" : "No new videos found.");
 
         return foundMovies;
     }
@@ -206,13 +228,9 @@ public class main {
         return null;
     }
 
-    private static String getCurrentTime() {
-        return new Date().toString();
-    }
-
     private static void finish() {
         long stopTime = System.currentTimeMillis();
-        myLog(String.format("Time Elapsed: %s secs", (stopTime - startTime)/1000.0));
+        myLog(String.format("\nTime Elapsed: %s secs", (stopTime - startTime)/1000.0));
         myLog("------------------------------");
         exit(0);
     }
