@@ -1,33 +1,13 @@
 package model;
 
 import java.io.*;
+import java.util.Date;
 import java.util.HashSet;
 
 public class Logging {
 
     public static File whiteListLog = null;
     public static File infoLog = null;
-
-    public static HashSet<String> loadWhiteList() {
-
-        HashSet<String> whiteList = new HashSet<>();
-
-        String line = null;
-
-        try {
-            FileReader fileReader = new FileReader(whiteListLog);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            while((line = bufferedReader.readLine()) != null)
-                whiteList.add(line);
-
-            bufferedReader.close();
-        }
-        catch(Exception e) {
-        }
-
-        return whiteList;
-    }
 
     public static void writeToLog(File log, String text){
 
@@ -60,6 +40,10 @@ public class Logging {
         writeToInfoLog(message);
     }
 
+    public static void myLogWithTimestamp(String message) {
+        myLog(getCurrentTime() + ": "  + message);
+    }
+
     public static void myLog(String message, int dest) {
         switch (dest){
             case 0:
@@ -69,5 +53,10 @@ public class Logging {
                 writeToInfoLog(message);
                 break;
         }
+    }
+
+
+    public static String getCurrentTime() {
+        return new Date().toString();
     }
 }
