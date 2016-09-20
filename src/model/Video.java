@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import utils.VideoUtil;
 
 public abstract class Video {
 
@@ -17,14 +18,6 @@ public abstract class Video {
     protected String parentName;
 
     private boolean copy; // true = copy false = just move
-
-    // A number I have come up with from using this program for years, not too small, not too large
-    public static final int SIZE_THRESHOLD = 78643200; // 78.64 MBs
-    public static final String[] EXTS = {".avi", ".mkv", ".mp4"};
-
-    enum Type {
-        MOVIE, TVSHOW
-    }
 
     /**
      * Return the destination for this video.
@@ -44,48 +37,6 @@ public abstract class Video {
         this.ext = getExtension();
     }
 
-    public static Video createVideoType(File video, boolean copy) {
-
-        Pattern pattern = Pattern.compile("(.*)s(\\d+)e(\\d+).*", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(video.getName());
-
-        if(matcher.find()) {
-            String tvShowName = matcher.group(1);
-            String season = matcher.group(2);
-            String episode = matcher.group(3);
-            return new TVShow(video, cleanUp(tvShowName), season, episode, copy);
-        }
-
-        return new Movie(video, copy);
-    }
-
-    public static Video createVideoType(File video) {
-        return createVideoType(video, true);
-    }
-
-    public static Video createVideoType(String fileName, boolean copy) {
-        return createVideoType(new File(fileName), copy);
-    }
-
-    public static Video createVideoType(String fileName) {
-        return createVideoType(new File(fileName));
-    }
-
-    public static Type getVideoType(String fileName) {
-
-        Pattern pattern = Pattern.compile("s\\d+e\\d+", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(fileName);
-
-        if(matcher.find())
-            return Type.TVSHOW;
-
-        return Type.MOVIE;
-    }
-
-    public static String cleanUp(String text) {
-        return text.replace('.', ' ').trim();
-    }
-
     private String getVideoQuality() {
 
         String fileOrFolder = this.fileName + this.parentName;
@@ -100,10 +51,6 @@ public abstract class Video {
     }
 
     private String getExtension() {
-        return Video.getExtension(this.fileName);
-    }
-
-    public static String getExtension(String fileName) {
         int index = fileName.lastIndexOf(".");
         return index > -1 ? fileName.substring(index) : "unknown";
     }
