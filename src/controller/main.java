@@ -8,17 +8,13 @@ import java.util.*;
 
 import static java.lang.System.exit;
 
-import com.github.junrar.Archive;
-import com.github.junrar.exception.RarException;
-import com.github.junrar.extract.ExtractArchive;
-import com.github.junrar.rarfile.FileHeader;
-
 import static model.Logging.*;
 import static model.QuasiConsts.importLoc;
 import static model.QuasiConsts.infoLogLoc;
 import static model.QuasiConsts.whiteListLogLoc;
 
 import model.Video;
+import static utils.VideoUtil.*;
 
 public class main {
 
@@ -140,7 +136,7 @@ public class main {
                     if(isAVideo(file))
                     {
                         whiteListFile(importDir, file);
-                        videos.add(Video.createVideoType(file));
+                        videos.add(createVideoType(file));
                         myLog(" + " + file.getName());
                         foundMovies = true;
                     }
@@ -149,7 +145,7 @@ public class main {
                         whiteListFile(importDir, file);
                         myLog("   > unraring: " + file.getName() + "...");
                         File videoFromRar = getVideoFromRar(file);
-                        videos.add(Video.createVideoType(videoFromRar, false));
+                        videos.add(createVideoType(videoFromRar, false));
                         myLog("   > Done.");
                         myLog(" + " + videoFromRar.getName());
                         foundMovies = true;
@@ -167,65 +163,11 @@ public class main {
         return foundMovies;
     }
 
-    public static boolean isAVideo(String fileName, long fileSize) {
-        HashSet<String> exts = new HashSet<String>(Arrays.asList(Video.EXTS));
-        return exts.contains(Video.getExtension(fileName)) && fileSize > Video.SIZE_THRESHOLD;
-    }
-
-    public static boolean isAVideo (File file) {
-        return file.isFile() && isAVideo(file.getAbsolutePath(), file.length());
-    }
-
     public static void whiteListFile(File importDir, File file) {
         if(file.getParentFile().equals(importDir))
             writeToWhiteListLog(file.getName());
         else
             writeToWhiteListLog(file.getParentFile().getName());
-    }
-
-    private static boolean isARarVideo(File file) {
-
-        if (!file.isFile() || !file.getPath().endsWith(".rar"))
-            return false;
-
-        Archive rar = null;
-        try {
-            rar = new Archive(file);
-        } catch (RarException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        List<FileHeader> filesInRar = rar.getFileHeaders();
-
-        for (FileHeader fileHeader : filesInRar) {
-
-            String fileName = fileHeader.getFileNameString();
-            long fileSize = fileHeader.getFullUnpackSize();
-
-            if(isAVideo(fileName, fileSize))
-                return true;
-        }
-
-        return false;
-    }
-
-//    TODO there is a chance the rar file has more items than just the one file
-//    should clean up all the files made except for the movie files...
-    private static File getVideoFromRar(final File videoRar) {
-
-        final File destFolder = new File(videoRar.getParentFile().getAbsolutePath());
-
-        ExtractArchive extractArchive = new ExtractArchive();
-        extractArchive.extractArchive(videoRar, destFolder);
-
-        File[] fList = destFolder.listFiles();
-        for (File file : fList)
-            if (isAVideo(file))
-                return file;
-
-        return null;
     }
 
     private static void finish() {
