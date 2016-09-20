@@ -8,7 +8,7 @@ import java.util.*;
 
 import static java.lang.System.exit;
 
-import static model.Logging.*;
+import static utils.Logging.*;
 import static model.QuasiConsts.importLoc;
 import static model.QuasiConsts.infoLogLoc;
 import static model.QuasiConsts.whiteListLogLoc;
