@@ -4,9 +4,9 @@ import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
 import com.github.junrar.extract.ExtractArchive;
 import com.github.junrar.rarfile.FileHeader;
-import model.Movie;
-import model.TVShow;
-import model.Video;
+import model.video.Movie;
+import model.video.TVShow;
+import model.video.Video;
 
 import java.io.File;
 import java.io.IOException;

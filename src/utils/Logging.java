@@ -2,12 +2,25 @@ package utils;
 
 import java.io.*;
 import java.util.Date;
-import java.util.HashSet;
+
+import static utils.Globals.*;
 
 public class Logging {
 
-    public static File whiteListLog = null;
-    public static File infoLog = null;
+    private static File whiteListLog = null;
+    private static File infoLog = null;
+
+    public static void initLogs() {
+        whiteListLog = new File(whiteListLogLoc);
+        infoLog = new File(infoLogLoc);
+        if (!infoLog.exists()) {
+            try {
+                infoLog.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static void writeToLog(File log, String text){
 
@@ -24,7 +37,6 @@ public class Logging {
             } catch (Exception e) {
             }
         }
-
     }
 
     public static void writeToWhiteListLog(String file) {
@@ -44,19 +56,11 @@ public class Logging {
         myLog(getCurrentTime() + ": "  + message);
     }
 
-    public static void myLog(String message, int dest) {
-        switch (dest){
-            case 0:
-                System.out.println(message);
-                break;
-            case 1:
-                writeToInfoLog(message);
-                break;
-        }
-    }
-
-
     public static String getCurrentTime() {
         return new Date().toString();
+    }
+
+    public static File getWhiteListLog() {
+        return whiteListLog;
     }
 }

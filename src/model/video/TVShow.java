@@ -1,4 +1,6 @@
-package model;
+package model.video;
+
+import utils.Globals;
 
 import java.io.File;
 
@@ -8,7 +10,7 @@ public class TVShow extends Video {
 	private String season;
 	private String episode;
 
-	public String rootLoc = QuasiConsts.tvshowRootLoc;
+	public String rootLoc = Globals.tvshowRootLoc;
 
 	public TVShow(File tvShow, String tvShowName, String season, String episode, boolean copy) {
 		super(tvShow, copy);

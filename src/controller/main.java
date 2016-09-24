@@ -3,27 +3,22 @@ package controller;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 import static java.lang.System.exit;
 
 import static utils.Logging.*;
-import static model.QuasiConsts.importLoc;
-import static model.QuasiConsts.infoLogLoc;
-import static model.QuasiConsts.whiteListLogLoc;
+import static utils.Globals.*;
+import model.video.Video;
 
-import model.Video;
 import static utils.VideoUtil.*;
 
 public class main {
 
+    private static long startTime = 0;
     static ArrayList<Video> videos = null;
     static HashSet<String> whiteList = null;
-
     static File importDir = null;
-
-    private static long startTime = 0;
 
     public static void main(String[] args) {
 
@@ -39,45 +34,37 @@ public class main {
     }
 
     public static void setUp() {
-
         startTime = System.currentTimeMillis();
-
-        initializeLogs();
-
+        setUpLogs();
         videos = new ArrayList<>();
-
-        whiteList = loadWhiteList();
+        loadWhiteList();
     }
 
-    public static void initializeLogs() {
-
-        whiteListLog = new File(whiteListLogLoc);
-        infoLog = new File(infoLogLoc);
+    public static void setUpLogs() {
         importDir = new File(importLoc);
-
-        if (!infoLog.exists()) {
-            try {
-                infoLog.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if(!whiteListLog.exists()) {
-            fillWhiteListLog();
-            myLogWithTimestamp("Created new whitelist log.");
+        initLogs();
+        if(!getWhiteListLog().exists()) {
+            fillWhiteListLog(importDir);
             finish();
         }
     }
 
-    public static HashSet<String> loadWhiteList() {
 
-        HashSet<String> whiteList = new HashSet<>();
+    public static void fillWhiteListLog(File importDir) {
+        for(File file : importDir.listFiles()) {
+            writeToWhiteListLog(file.getName());
+        }
+        myLogWithTimestamp("Created new whitelist log.");
+    }
+
+    public static void loadWhiteList() {
+
+        whiteList = new HashSet<>();
 
         String line = null;
 
         try {
-            FileReader fileReader = new FileReader(whiteListLog);
+            FileReader fileReader = new FileReader(getWhiteListLog());
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             while((line = bufferedReader.readLine()) != null)
@@ -86,14 +73,7 @@ public class main {
             bufferedReader.close();
         }
         catch(Exception e) {
-        }
-
-        return whiteList;
-    }
-
-    public static void fillWhiteListLog() {
-        for(File file : importDir.listFiles()) {
-            writeToWhiteListLog(file.getName());
+            whiteList = new HashSet<>();
         }
     }
 
