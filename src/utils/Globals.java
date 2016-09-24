@@ -1,6 +1,6 @@
-package model;
+package utils;
 
-public class QuasiConsts {
+public class Globals {
 
     // Logging file locations
     public static String importLoc         = "playground/import/";

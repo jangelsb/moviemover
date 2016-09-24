@@ -1,11 +1,10 @@
-package model;
+package model.video;
 
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
-import utils.VideoUtil;
 
 public abstract class Video {
 
@@ -55,7 +54,7 @@ public abstract class Video {
         return index > -1 ? fileName.substring(index) : "unknown";
     }
 
-    protected boolean setUpDest() {
+    private boolean setUpDest() {
         // add error checking here
         this.destination = new File(getDestLoc());
         return destination.mkdirs();
