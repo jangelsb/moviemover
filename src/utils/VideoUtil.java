@@ -16,68 +16,20 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static utils.VideoUtil.Type.*;
-
 public class VideoUtil {
 
     // A number I have come up with from using this program for years, not too small, not too large
-    public static final int SIZE_THRESHOLD = 78643200; // 78.64 MBs
-    public static final String[] EXTS = {".avi", ".mkv", ".mp4"};
-
-    enum Type {
-        MOVIE, TVSHOW
-    }
+    private static final int SIZE_THRESHOLD = 78643200; // 78.64 MBs
+    private static final String[] EXTS = {".avi", ".mkv", ".mp4"};
 
     public static String getExtension(String fileName) {
         int index = fileName.lastIndexOf(".");
         return index > -1 ? fileName.substring(index) : "unknown";
     }
 
-    public static String cleanUp(String text) {
-        return text.replace('.', ' ').trim();
-    }
-
-    public static Video createVideoType(File video, boolean copy) {
-
-        Pattern pattern = Pattern.compile("(.*)s(\\d+)e(\\d+).*", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(video.getName());
-
-        if(matcher.find()) {
-            String tvShowName = matcher.group(1);
-            String season = matcher.group(2);
-            String episode = matcher.group(3);
-            return new TVShow(video, cleanUp(tvShowName), season, episode, copy);
-        }
-
-        return new Movie(video, copy);
-    }
-
-    public static Video createVideoType(String fileName, boolean copy) {
-        return createVideoType(new File(fileName), copy);
-    }
-
-    public static Video createVideoType(File video) {
-        return createVideoType(video, true);
-    }
-
-    public static Video createVideoType(String fileName) {
-        return createVideoType(new File(fileName), true);
-    }
-
-    public static Type getVideoType(String fileName) {
-
-        Pattern pattern = Pattern.compile("s\\d+e\\d+", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(fileName);
-
-        if(matcher.find())
-            return TVSHOW;
-
-        return MOVIE;
-    }
-
     public static boolean isAVideo(String fileName, long fileSize) {
-        HashSet<String> exts = new HashSet<String>(Arrays.asList(VideoUtil.EXTS));
-        return exts.contains(VideoUtil.getExtension(fileName)) && fileSize > VideoUtil.SIZE_THRESHOLD;
+        HashSet<String> exts = new HashSet<String>(Arrays.asList(EXTS));
+        return exts.contains(getExtension(fileName)) && fileSize > SIZE_THRESHOLD;
     }
 
     public static boolean isAVideo (File file) {
@@ -129,6 +81,34 @@ public class VideoUtil {
         return null;
     }
 
+    public static String cleanUp(String text) {
+        return text.replace('.', ' ').trim();
+    }
 
+    public static Video createVideoType(File video) {
+        return createVideoType(video, true);
+    }
 
+    public static Video createVideoType(File video, boolean copy) {
+
+        Pattern pattern = Pattern.compile("(.*)s(\\d+)e(\\d+).*", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(video.getName());
+
+        if(matcher.find()) {
+            String tvShowName = matcher.group(1);
+            String season = matcher.group(2);
+            String episode = matcher.group(3);
+            return new TVShow(video, cleanUp(tvShowName), season, episode, copy);
+        }
+
+        return new Movie(video, copy);
+    }
+
+    public static Video createVideoType(String fileName) {
+        return createVideoType(new File(fileName), true);
+    }
+
+    public static Video createVideoType(String fileName, boolean copy) {
+        return createVideoType(new File(fileName), copy);
+    }
 }

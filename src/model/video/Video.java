@@ -8,18 +8,15 @@ import org.apache.commons.io.FileUtils;
 
 public abstract class Video {
 
+    private boolean copy;
     protected String quality;
-    protected String ext;
-    protected String fileName;
-    protected File video;
-
-    protected File destination = null;
     protected String parentName;
-
-    private boolean copy; // true = copy false = just move
+    protected String fileName;
+    protected File video = null;
+    protected File destination = null;
 
     /**
-     * Return the destination for this video.
+     * Return the destination of where this video should go.
      */
     protected abstract String getDestLoc();
 
@@ -33,7 +30,6 @@ public abstract class Video {
         this.fileName = video.getName();
         this.parentName = video.getParentFile().getName();
         this.quality = getVideoQuality();
-        this.ext = getExtension();
     }
 
     private String getVideoQuality() {
@@ -47,11 +43,6 @@ public abstract class Video {
             return matcher.group(1).toLowerCase();
 
         return "Non HD";
-    }
-
-    private String getExtension() {
-        int index = fileName.lastIndexOf(".");
-        return index > -1 ? fileName.substring(index) : "unknown";
     }
 
     private boolean setUpDest() {

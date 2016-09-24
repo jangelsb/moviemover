@@ -1,8 +1,6 @@
 package controller;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.*;
 
 import static java.lang.System.exit;
@@ -16,9 +14,9 @@ import static utils.VideoUtil.*;
 public class main {
 
     private static long startTime = 0;
-    static ArrayList<Video> videos = null;
-    static HashSet<String> whiteList = null;
-    static File importDir = null;
+    private static ArrayList<Video> videos = null;
+    private static HashSet<String> whiteList = null;
+    private static File importDir = null;
 
     public static void main(String[] args) {
 
@@ -35,46 +33,27 @@ public class main {
 
     public static void setUp() {
         startTime = System.currentTimeMillis();
+        importDir = new File(importLoc);
+
         setUpLogs();
+
         videos = new ArrayList<>();
-        loadWhiteList();
+        whiteList = loadWhiteListLog();
     }
 
     public static void setUpLogs() {
-        importDir = new File(importLoc);
-        initLogs();
-        if(!getWhiteListLog().exists()) {
+        setUpInfoLog();
+        if(!whiteListLogExists()) {
             fillWhiteListLog(importDir);
             finish();
         }
     }
 
-
     public static void fillWhiteListLog(File importDir) {
         for(File file : importDir.listFiles()) {
             writeToWhiteListLog(file.getName());
         }
-        myLogWithTimestamp("Created new whitelist log.");
-    }
-
-    public static void loadWhiteList() {
-
-        whiteList = new HashSet<>();
-
-        String line = null;
-
-        try {
-            FileReader fileReader = new FileReader(getWhiteListLog());
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            while((line = bufferedReader.readLine()) != null)
-                whiteList.add(line);
-
-            bufferedReader.close();
-        }
-        catch(Exception e) {
-            whiteList = new HashSet<>();
-        }
+        myLogWithTimestamp("Created a whitelist log.");
     }
 
     public static boolean isFileNew(String fileName) {
@@ -85,15 +64,12 @@ public class main {
         return isFileNew(file.getName());
     }
 
-    private static void moveVideos() {
-        myLogWithTimestamp("Moving videos to correct directories...");
 
-        for(Video video : videos) {
-            video.move();
-            myLog(" - " + video.getInfo());
-        }
-
-        myLog("Done.");
+    public static void whiteListFile(File importDir, File file) {
+        if(file.getParentFile().equals(importDir))
+            writeToWhiteListLog(file.getName());
+        else
+            writeToWhiteListLog(file.getParentFile().getName());
     }
 
     public static boolean findNewVideos(File importDir) {
@@ -143,17 +119,21 @@ public class main {
         return foundMovies;
     }
 
-    public static void whiteListFile(File importDir, File file) {
-        if(file.getParentFile().equals(importDir))
-            writeToWhiteListLog(file.getName());
-        else
-            writeToWhiteListLog(file.getParentFile().getName());
+    private static void moveVideos() {
+        myLogWithTimestamp("Moving videos to correct directories...");
+
+        for(Video video : videos) {
+            video.move();
+            myLog(" - " + video.getInfo());
+        }
+
+        myLog("Done.");
     }
 
     private static void finish() {
         long stopTime = System.currentTimeMillis();
         myLog(String.format("\nTime Elapsed: %s secs", (stopTime - startTime)/1000.0));
-        myLog("------------------------------");
+        myLog("------------------------------------------------------------");
         exit(0);
     }
 }

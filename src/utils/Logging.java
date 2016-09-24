@@ -2,6 +2,7 @@ package utils;
 
 import java.io.*;
 import java.util.Date;
+import java.util.HashSet;
 
 import static utils.Globals.*;
 
@@ -10,9 +11,10 @@ public class Logging {
     private static File whiteListLog = null;
     private static File infoLog = null;
 
-    public static void initLogs() {
-        whiteListLog = new File(whiteListLogLoc);
+
+    public static void setUpInfoLog() {
         infoLog = new File(infoLogLoc);
+
         if (!infoLog.exists()) {
             try {
                 infoLog.createNewFile();
@@ -20,6 +22,13 @@ public class Logging {
                 e.printStackTrace();
             }
         }
+    }
+    public static boolean whiteListLogExists() {
+        whiteListLog = new File(whiteListLogLoc);
+        if(!whiteListLog.exists()) {
+            return false;
+        }
+        return true;
     }
 
     public static void writeToLog(File log, String text){
@@ -60,7 +69,25 @@ public class Logging {
         return new Date().toString();
     }
 
-    public static File getWhiteListLog() {
-        return whiteListLog;
+    public static HashSet<String> loadWhiteListLog() {
+
+        HashSet<String> whiteList = new HashSet<>();
+
+        String line = null;
+
+        try {
+            FileReader fileReader = new FileReader(whiteListLog);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            while((line = bufferedReader.readLine()) != null)
+                whiteList.add(line);
+
+            bufferedReader.close();
+        }
+        catch(Exception e) {
+            whiteList = new HashSet<>();
+        }
+
+        return whiteList;
     }
 }
