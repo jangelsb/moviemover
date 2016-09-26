@@ -23,7 +23,8 @@ public class main {
     public static void main(String[] args) {
 
 //        TODO custom parameters
-
+//        TODO clean up subtitle code
+//        TODO make subtitles an option
         setUp();
 
         if(findNewVideos(importDir)) {
@@ -31,10 +32,6 @@ public class main {
         }
 
         finish();
-
-//        File f = new File("/Users/joshangelsberg/Documents/programming/moviemover/playground/tvshows/720p/Mr Robot/Season 02/Mr.Robot.S02E01.720p.HDTV.x264-KILLERS.mkv");
-//        System.out.println(f.getParent());
-
     }
 
     public static void setUp() {
