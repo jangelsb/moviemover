@@ -13,7 +13,6 @@ import java.net.URLConnection;
 public class UrlUtil {
     private static String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36";
 
-//    String videoName = "Mr.Robot.S02E01.720p.HDTV.x264-KILLERS.mkv";
     public static File downloadSubtitle(File video) {
 
         try {
