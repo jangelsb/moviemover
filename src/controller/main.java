@@ -1,14 +1,16 @@
 package controller;
 
-import java.io.File;
-import java.util.*;
-
-import static java.lang.System.exit;
-
-import static utils.Logging.*;
-import static utils.Globals.*;
 import model.video.Video;
 
+import java.io.File;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Queue;
+
+import static java.lang.System.exit;
+import static utils.Globals.importLoc;
+import static utils.Logging.*;
 import static utils.VideoUtil.*;
 
 public class main {
@@ -29,6 +31,10 @@ public class main {
         }
 
         finish();
+
+//        File f = new File("/Users/joshangelsberg/Documents/programming/moviemover/playground/tvshows/720p/Mr Robot/Season 02/Mr.Robot.S02E01.720p.HDTV.x264-KILLERS.mkv");
+//        System.out.println(f.getParent());
+
     }
 
     public static void setUp() {
@@ -64,7 +70,7 @@ public class main {
         return isFileNew(file.getName());
     }
 
-
+// TODO this can if multiple files are in the same folder, this will whitelist the parentfolder multiple times, maybe check if already whitelisted?
     public static void whiteListFile(File importDir, File file) {
         if(file.getParentFile().equals(importDir))
             writeToWhiteListLog(file.getName());

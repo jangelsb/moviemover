@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import utils.UrlUtil;
 
 public abstract class Video {
 
@@ -14,6 +15,7 @@ public abstract class Video {
     protected String fileName;
     protected File video = null;
     protected File destination = null;
+    protected File subtitle = null;
 
     /**
      * Return the destination of where this video should go.
@@ -30,6 +32,7 @@ public abstract class Video {
         this.fileName = video.getName();
         this.parentName = video.getParentFile().getName();
         this.quality = getVideoQuality();
+        this.subtitle = UrlUtil.downloadSubtitle(video);
     }
 
     private String getVideoQuality() {
@@ -61,6 +64,10 @@ public abstract class Video {
                 FileUtils.copyFileToDirectory(this.video, this.destination);
             } else {
                 FileUtils.moveFileToDirectory(this.video, this.destination, true);
+            }
+
+            if(subtitle != null) {
+                FileUtils.moveFileToDirectory(this.subtitle, this.destination, true);
             }
 
             return true;
