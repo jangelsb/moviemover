@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
-import utils.UrlUtil;
+import utils.Subtitle;
 
 public abstract class Video {
 
@@ -32,7 +32,7 @@ public abstract class Video {
         this.fileName = video.getName();
         this.parentName = video.getParentFile().getName();
         this.quality = getVideoQuality();
-        this.subtitle = UrlUtil.downloadSubtitle(video);
+        this.subtitle = new Subtitle(video).download();
     }
 
     private String getVideoQuality() {
