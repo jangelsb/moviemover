@@ -4,7 +4,6 @@
     <root id="archive" name="moviemover.jar">
       <element id="module-output" name="moviemover" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/junrar-0.7.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/libs/jsoup-1.9.2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/commons-io-2.4.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/commons-logging-1.2.1.1.jar" path-in-jar="/" />
     </root>
