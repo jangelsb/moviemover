@@ -23,7 +23,6 @@ public class main {
     public static void main(String[] args) {
 
 //        TODO custom parameters
-//        TODO clean up subtitle code
 //        TODO make subtitles an option
         setUp();
 
