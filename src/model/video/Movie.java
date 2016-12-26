@@ -20,6 +20,8 @@ public class Movie extends Video {
 
 	@Override
 	protected String getDestLoc() {
-		return String.format("%s/%s/", this.rootLoc, this.quality);
+		String location = Globals.movieScheme.replace("[Root]", this.rootLoc);
+		location = location.replace("[Quality]", this.quality);
+		return location;
 	}
 }
