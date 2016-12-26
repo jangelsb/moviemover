@@ -1,0 +1,1 @@
+java -jar ./out/artifacts/moviemover_jar/moviemover.jar importLoc="./playground/import/" tvShowRootLoc="./playground/TV Shows" movieRootLoc="./playground/Movies" movieScheme="[Root]/[Quality]/" tvShowScheme="[Root]/[Quality]/TV Shows/[TV Show Name]/Season [Season #]/" subtitleType="HI"
