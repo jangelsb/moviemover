@@ -23,10 +23,10 @@ public class Globals {
     public static void initGlobals(String[] args) {
 
         for (String arg : args) {
-            String cat = arg.substring(0, arg.indexOf("="));
+            String varName = arg.substring(0, arg.indexOf("="));
             String value = arg.substring(arg.indexOf("=") + 1);
 
-            switch (cat) {
+            switch (varName) {
                 case "importLoc":
                     if (!value.endsWith("/")) value += "/";
                     importLoc = value;
@@ -53,7 +53,6 @@ public class Globals {
     }
 
     private static Subtitle.Type getSubtitleType(String value) {
-
         switch (value) {
             case "HI":
                 return Subtitle.Type.HI;
