@@ -26,6 +26,7 @@ public class TVShow extends Video {
 		location = location.replace("[Quality]", this.quality);
 		location = location.replace("[TV Show Name]", this.tvShowName);
 		location = location.replace("[Season #]", this.season);
+		location = location.replace("[Episode #]", this.episode);
 		return location;
 	}
 }
