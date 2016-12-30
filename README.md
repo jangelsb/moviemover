@@ -11,8 +11,7 @@ However, if you run the jar file from the terminal, you can customize these loca
 
 e.g., executing:
 ```
-java -jar ./out/artifacts/moviemover_jar/moviemover.jar importLoc="./playground/import/"
-movieScheme="./playground/Movies/[Quality]/" tvShowScheme="./playground/TV Shows/[Quality]/TV Shows/[TV Show Name]/Season [Season #]/" subtitleType="None"
+java -jar ./out/artifacts/moviemover_jar/moviemover.jar importLoc="./playground/import/" movieScheme="./playground/Movies/[Quality]/" tvShowScheme="./playground/TV Shows/[Quality]/TV Shows/[TV Show Name]/Season [Season #]/" subtitleType="None"
 ```
 yields:
 ```
