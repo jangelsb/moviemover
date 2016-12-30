@@ -34,7 +34,7 @@ public abstract class Video {
         this.fileName = video.getName();
         this.parentName = video.getParentFile().getName();
         this.quality = getVideoQuality();
-        this.subtitle = subtitleType != null ? new Subtitle(video, subtitleType).setVerbose(false).download() : null;
+        this.subtitle = getSubtitles();
     }
 
     private String getVideoQuality() {
@@ -48,6 +48,10 @@ public abstract class Video {
             return matcher.group(1).toLowerCase();
 
         return "Non HD";
+    }
+
+    private File getSubtitles() {
+        return subtitleType != null ? new Subtitle(video, subtitleType).setVerbose(false).download() : null;
     }
 
     private boolean setUpDest() {

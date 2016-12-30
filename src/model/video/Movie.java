@@ -8,8 +8,6 @@ public class Movie extends Video {
 
 	private String year;
 
-	public static String rootLoc = Globals.movieRootLoc;
-
 	public Movie(File movie) {
 		this(movie, true);
 	}
@@ -20,8 +18,6 @@ public class Movie extends Video {
 
 	@Override
 	protected String getDestLoc() {
-		String location = Globals.movieScheme.replace("[Root]", this.rootLoc);
-		location = location.replace("[Quality]", this.quality);
-		return location;
+		return Globals.movieScheme.replace("[Quality]", this.quality);
 	}
 }
