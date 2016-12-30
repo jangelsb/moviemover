@@ -1,5 +1,5 @@
 # README #
-This is a program to automate your video downloads. It can even unrar those pesky rar files. 
+This is a program to automate your video downloads. It can even unrar those pesky rar files *and* download subtiles from subscene using this [java api](https://github.com/jangelsb/subscene_api)
 
 
 ### How does it work? ###
