@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Queue;
 
 import static java.lang.System.exit;
-import static utils.Globals.importLoc;
+import static utils.Globals.*;
 import static utils.Logging.*;
 import static utils.VideoUtil.*;
 
@@ -22,11 +22,11 @@ public class main {
 
     public static void main(String[] args) {
 
-//        TODO custom parameters
-//        TODO make subtitles an option
+        initGlobals(args);
+
         setUp();
 
-        if(findNewVideos(importDir)) {
+        if (findNewVideos(importDir)) {
             moveVideos();
         }
 
@@ -45,14 +45,14 @@ public class main {
 
     public static void setUpLogs() {
         setUpInfoLog();
-        if(!whiteListLogExists()) {
+        if (!whiteListLogExists()) {
             fillWhiteListLog(importDir);
             finish();
         }
     }
 
     public static void fillWhiteListLog(File importDir) {
-        for(File file : importDir.listFiles()) {
+        for (File file : importDir.listFiles()) {
             writeToWhiteListLog(file.getName());
         }
         myLogWithTimestamp("Created a whitelist log.");
@@ -66,9 +66,9 @@ public class main {
         return isFileNew(file.getName());
     }
 
-// TODO this can if multiple files are in the same folder, this will whitelist the parentfolder multiple times, maybe check if already whitelisted?
+    // TODO this can if multiple files are in the same folder, this will whitelist the parentfolder multiple times, maybe check if already whitelisted?
     public static void whiteListFile(File importDir, File file) {
-        if(file.getParentFile().equals(importDir))
+        if (file.getParentFile().equals(importDir))
             writeToWhiteListLog(file.getName());
         else
             writeToWhiteListLog(file.getParentFile().getName());
@@ -84,22 +84,16 @@ public class main {
 
         dirs.add(currentDir);
 
-        while(!dirs.isEmpty())
-        {
+        while (!dirs.isEmpty()) {
             currentDir = dirs.remove();
-            for (File file : currentDir.listFiles())
-            {
-                if(isFileNew(file))
-                {
-                    if(isAVideo(file))
-                    {
+            for (File file : currentDir.listFiles()) {
+                if (isFileNew(file)) {
+                    if (isAVideo(file)) {
                         whiteListFile(importDir, file);
                         videos.add(createVideoType(file));
                         myLog(" + " + file.getName());
                         foundMovies = true;
-                    }
-                    else if(isARarVideo(file))
-                    {
+                    } else if (isARarVideo(file)) {
                         whiteListFile(importDir, file);
                         myLog("   > unraring: " + file.getName() + "...");
                         File videoFromRar = getVideoFromRar(file);
@@ -107,9 +101,7 @@ public class main {
                         myLog("   > Done.");
                         myLog(" + " + videoFromRar.getName());
                         foundMovies = true;
-                    }
-                    else if (file.isDirectory())
-                    {
+                    } else if (file.isDirectory()) {
                         dirs.add(file);
                     }
                 }
@@ -124,7 +116,7 @@ public class main {
     private static void moveVideos() {
         myLogWithTimestamp("Moving videos to correct directories...");
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             video.move();
             myLog(" - " + video.getInfo());
         }
@@ -134,7 +126,7 @@ public class main {
 
     private static void finish() {
         long stopTime = System.currentTimeMillis();
-        myLog(String.format("\nTime Elapsed: %s secs", (stopTime - startTime)/1000.0));
+        myLog(String.format("\nTime Elapsed: %s secs", (stopTime - startTime) / 1000.0));
         myLog("------------------------------------------------------------");
         exit(0);
     }
