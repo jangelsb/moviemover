@@ -10,8 +10,6 @@ public class TVShow extends Video {
 	private String season;
 	private String episode;
 
-	public String rootLoc = Globals.tvshowRootLoc;
-
 	public TVShow(File tvShow, String tvShowName, String season, String episode, boolean copy) {
 		super(tvShow, copy);
 
@@ -22,6 +20,10 @@ public class TVShow extends Video {
 
 	@Override
 	protected String getDestLoc() {
-		return String.format("%s/%s/%s/Season %s/", this.rootLoc, this.quality, this.tvShowName, this.season);
+		String location = Globals.tvShowScheme.replace("[Quality]", this.quality);
+		location = location.replace("[TV Show Name]", this.tvShowName);
+		location = location.replace("[Season #]", this.season);
+		location = location.replace("[Episode #]", this.episode);
+		return location;
 	}
 }
