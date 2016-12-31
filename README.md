@@ -1,5 +1,5 @@
-# README #
-This is a program to automate your video downloads. It can even unrar those pesky rar files *and* download subtiles from subscene using this [java api](https://github.com/jangelsb/subscene_api)
+# MovieMover #
+This is a program to automate your video downloads. It can even unrar those pesky rar files *and* download subtiles from subscene using this [java api](https://github.com/jangelsb/subscene_api).
 
 
 ### How does it work? ###
@@ -7,7 +7,7 @@ It "watches" a folder for new movies or tv shows. By default, the directory it w
 
 It copies or moves videos to `./playground/tvshows` or `./playground/movies` based on it's type. 
 
-However, if you run the jar file from the terminal, you can customize these locations. This is demonstarted and explained in the `./test_script.sh`
+However, if you run the jar file from the terminal, you can customize these locations and some settings. This is demonstarted and explained in the `./test_script.sh`
 
 e.g., executing:
 ```
@@ -36,12 +36,10 @@ If it unrars a file it will move it to the destination, if it doesn't have to, i
 
 
 ### Prerequisites ###
-* [Intellij Community Version](https://www.jetbrains.com/idea/download/)
 * [JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 
-
-### Setup ###
+### Want to contribute?  ###
 
 * Clone repository
-* Open Intelij
+* Open [Intellij Community Version](https://www.jetbrains.com/idea/download/)
 * Open MovieMover project
