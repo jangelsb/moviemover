@@ -10,6 +10,7 @@ You can see an example, with explanations, in [`./test_script.sh`](https://githu
 ### How does it work? ###
 It "watches" a folder, `importDir`, for new tv shows or movies. If found, it copies or moves the videos to its designated folder, defined by `tvShowScheme` and `movieScheme`. Before handling the video, it can also download subtitles for the video, specified by `subtitleType`.
 
+<br>
 **More in depth:**
 
 On the initial run, it will create two files in the the import directory (`importDir`): `.mmlist` and `.mmlog`
