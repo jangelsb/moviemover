@@ -1,5 +1,5 @@
 # moviemover #
-This is a program to automate your video downloads. It can even unrar those pesky rar files *and* download subtiles from subscene using this [java api](https://github.com/jangelsb/subscene_api).
+This is a program to automate your video downloads. It can even unrar those pesky rar files *and* download subtitles from subscene using this [java api](https://github.com/jangelsb/subscene_api).
 
 
 ### How do I use it? ###
@@ -10,9 +10,8 @@ You can see an example, with explanations, in [`./test_script.sh`](https://githu
 ### How does it work? ###
 It "watches" a folder, `importDir`, for new tv shows or movies. If found, it copies or moves the videos to its designated folder, defined by `tvShowScheme` and `movieScheme`. Before handling the video, it can also download subtitles for the video, specified by `subtitleType`.
 
-<br>
-**More in depth:**
-
+  
+**More in depth:**  
 On the initial run, it will create two files in the the import directory (`importDir`): `.mmlist` and `.mmlog`
 
 
@@ -22,7 +21,7 @@ On the initial run, it will create two files in the the import directory (`impor
 
 Since `.mmlist` didn't already exist, the program assumes everything in the folder has already been processed and whitelists every file.
 
-<br>
+  
 The next time the program runs, it will search through the import directory (`importDir`) for any new files that aren't already whitelisted. If it finds a new file, it will determine if it is a video and if it is, it will handle it accordingly:
 
 * **If it is a rar file**, it will unrar it and then *move* the newly created video file to its correct directory.
@@ -31,7 +30,7 @@ The next time the program runs, it will search through the import directory (`im
 
 The reason it moves rar movie files and copies actual video files is because in both situations it leaves the original files intact. This way it doesn't actually move or modify the files it is looking at. 
 
-<br>
+  
 The direcory it stores TV Shows and Movies is in a dynamic folder scheme, `tvShowScheme` and `movieShowScheme`, respectively. 
 
 For example, `movieShowScheme` could look like this `movieShowScheme="~/playground/Movies/[Quality]/"`
@@ -43,16 +42,15 @@ Dynamic keywords consist of
 
 >  **TV Show:** [Quality], [TV Show Name], [Season #], and [Episode #]
 
-<br>
+  
 If a subtitle type is specified when calling the jar file, the script will also try and find the correct subtitle for the video file from subscene. It uses this [java api](https://github.com/jangelsb/subscene_api).
 
 For example, `subtitleType` could look like this `subtitleType="ForeignLangOnly"`
 
 Subtitle values consist of: None, HI, ForeignLangOnly, Normal
 
-<br>
-**All together now...**
-
+  
+**All together now...**  
 By running the jar file from the terminal, you can customize these values. 
 
 e.g., executing:
