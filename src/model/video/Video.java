@@ -44,7 +44,7 @@ public abstract class Video {
         Pattern pattern = Pattern.compile(".*(720p|1080p).*", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(fileOrFolder);
 
-        if(matcher.find())
+        if (matcher.find())
             return matcher.group(1).toLowerCase();
 
         return "Non HD";
@@ -72,7 +72,7 @@ public abstract class Video {
                 FileUtils.moveFileToDirectory(this.video, this.destination, true);
             }
 
-            if(subtitle != null) {
+            if (subtitle != null) {
                 FileUtils.moveFileToDirectory(this.subtitle, this.destination, true);
             }
 
@@ -89,6 +89,10 @@ public abstract class Video {
     }
 
     public String getInfo() {
-        return String.format("%s%s was _%s_ to %s", this.fileName, (subtitle != null ? " (with subs)" : ""), (copy? "COPIED" : "MOVED"), this.destination.getPath());
+        return String.format("%s%s was _%s_ to %s", this.fileName, (subtitle != null ? " (with subs)" : ""), (copy ? "COPIED" : "MOVED"), getDestLoc());
+    }
+
+    public String getPreliminaryInfo() {
+        return String.format("%s %s%s to %s... ", (copy ? "COPYING" : "MOVING"), this.fileName, (subtitle != null ? " (with subs)" : ""), getDestLoc());
     }
 }

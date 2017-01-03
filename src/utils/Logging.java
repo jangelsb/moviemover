@@ -31,12 +31,12 @@ public class Logging {
         return true;
     }
 
-    public static void writeToLog(File log, String text){
+    public static void writeToLog(File log, String text, boolean withNewLine){
 
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(log,true));
-            writer.write(text + "\n");
+            writer.write(text + (withNewLine ? "\n" : ""));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -49,16 +49,25 @@ public class Logging {
     }
 
     public static void writeToWhiteListLog(String file) {
-        writeToLog(whiteListLog, file);
+        writeToLog(whiteListLog, file, true);
     }
 
     public static void writeToInfoLog(String info) {
-        writeToLog(infoLog, info);
+        writeToLog(infoLog, info, true);
+    }
+
+    public static void writeToInfoLogNoReturn(String info) {
+        writeToLog(infoLog, info, false);
     }
 
     public static void myLog(String message) {
         System.out.println(message);
         writeToInfoLog(message);
+    }
+
+    public static void myLogNoReturn(String message) {
+        System.out.print(message);
+        writeToInfoLogNoReturn(message);
     }
 
     public static void myLogWithTimestamp(String message) {

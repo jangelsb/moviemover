@@ -66,7 +66,7 @@ public class VideoUtil {
 
     //    TODO there is a chance the rar file has more items than just the one file
     //    should clean up all the files made except for the movie files...
-    public static File getVideoFromRar(final File videoRar) {
+    public static File extractVideoFromRar(final File videoRar) {
 
         final File destFolder = new File(videoRar.getParentFile().getAbsolutePath());
 
@@ -83,10 +83,6 @@ public class VideoUtil {
 
     public static String cleanUp(String text) {
         return text.replace('.', ' ').trim();
-    }
-
-    public static Video createVideoType(File video) {
-        return createVideoType(video, true);
     }
 
     public static Video createVideoType(File video, boolean copy) {

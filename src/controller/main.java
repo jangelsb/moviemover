@@ -90,16 +90,11 @@ public class main {
                 if (isFileNew(file)) {
                     if (isAVideo(file)) {
                         whiteListFile(importDir, file);
-                        videos.add(createVideoType(file));
-                        myLog(" + " + file.getName());
+                        processVideo(file, true);
                         foundMovies = true;
                     } else if (isARarVideo(file)) {
                         whiteListFile(importDir, file);
-                        myLog("   > unraring: " + file.getName() + "...");
-                        File videoFromRar = getVideoFromRar(file);
-                        videos.add(createVideoType(videoFromRar, false));
-                        myLog("   > Done.");
-                        myLog(" + " + videoFromRar.getName());
+                        processVideo(getVideoFromRar(file), false);
                         foundMovies = true;
                     } else if (file.isDirectory()) {
                         dirs.add(file);
@@ -113,12 +108,26 @@ public class main {
         return foundMovies;
     }
 
+    private static void processVideo(File video, boolean copy) {
+        myLogNoReturn(" + " + video.getName() + "... ");
+        videos.add(createVideoType(video, copy));
+        myLog("[OK]");
+    }
+
+    private static File getVideoFromRar(File file) {
+        myLog("   > unraring: " + file.getName() + "... ");
+        File video = extractVideoFromRar(file);
+        myLog("   > done.");
+        return video;
+    }
+
     private static void moveVideos() {
         myLogWithTimestamp("Moving videos to correct directories...");
 
         for (Video video : videos) {
+            myLogNoReturn(" - " + video.getPreliminaryInfo());
             video.move();
-            myLog(" - " + video.getInfo());
+            myLog("[OK]");
         }
 
         myLog("Done.");
