@@ -108,6 +108,16 @@ public class main {
         return foundMovies;
     }
 
+    private static void moveVideos() {
+        myLogWithTimestamp("Moving videos to correct directories...");
+
+        for (Video video : videos) {
+            processMove(video);
+        }
+
+        myLog("Done.");
+    }
+
     private static void processVideo(File video, boolean copy) {
         myLogNoReturn(" + " + video.getName() + "... ");
         videos.add(createVideoType(video, copy));
@@ -121,16 +131,10 @@ public class main {
         return video;
     }
 
-    private static void moveVideos() {
-        myLogWithTimestamp("Moving videos to correct directories...");
-
-        for (Video video : videos) {
-            myLogNoReturn(" - " + video.getPreliminaryInfo());
-            video.move();
-            myLog("[OK]");
-        }
-
-        myLog("Done.");
+    private static void processMove(Video video) {
+        myLogNoReturn(" - " + video.getPreliminaryInfo());
+        video.move();
+        myLog("[OK]");
     }
 
     private static void finish() {
