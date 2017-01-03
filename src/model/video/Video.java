@@ -89,6 +89,6 @@ public abstract class Video {
     }
 
     public String getInfo() {
-        return this.fileName + " was _" + (copy? "COPIED" : "MOVED") + "_ to " + this.destination.getPath();
+        return String.format("%s%s was _%s_ to %s", this.fileName, (subtitle != null ? " (with subs)" : ""), (copy? "COPIED" : "MOVED"), this.destination.getPath());
     }
 }
