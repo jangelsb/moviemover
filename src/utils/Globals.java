@@ -10,11 +10,11 @@ public class Globals {
     public static String infoLogLoc = importLoc + ".mmlog";
 
     // Video type schemes / locations
-    public static String tvShowScheme = "playground/tvshows/[Quality]/TV Shows/[TV Show Name]/Season [Season #]/";
-    public static String movieScheme = "playground/movies/[Quality]/";
+    public static String tvShowScheme = "playground/TV Shows/[Quality]/[TV Show Name]/Season [Season #]/";
+    public static String movieScheme = "playground/Movies/[Quality]/";
 
     // Subtitle type
-    public static Subtitle.Type subtitleType = Subtitle.Type.HI;
+    public static Subtitle.Type subtitleType = null;
 
     public static void initGlobals(String[] args) {
 
