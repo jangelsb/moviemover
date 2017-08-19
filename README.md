@@ -7,6 +7,8 @@ All you need to do is download the [latest jar file](https://github.com/jangelsb
 
 You can see an example, with explanations, in [`./test_script.sh`](https://github.com/jangelsb/moviemover/blob/master/test_script.sh). By default, the script is self-contained in the project, so feel free to run it.
 
+[Here is a demo video on youtube.](https://www.youtube.com/watch?v=r4t62pIG7zQ)
+
 ### How does it work? ###
 It "watches" a folder, `importDir`, for new tv shows or movies. If found, it copies or moves the videos to its designated folder, defined by `tvShowScheme` and `movieScheme`. Before handling the video, it can also download subtitles for the video, specified by `subtitleType`.
 
